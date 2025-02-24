@@ -1,29 +1,44 @@
-def load_data(file_path):
-    # Load data from a given file path
-    import pandas as pd
-    data = pd.read_csv(file_path)
-    return data
+import torch
 
-def preprocess_data(data):
-    # Preprocess the data (e.g., normalization, handling missing values)
-    # This is a placeholder for actual preprocessing steps
-    return data
+def train_one_epoch(model, loader, criterion, optimizer, device):
+    """
+    单个epoch的训练逻辑
+    """
+    model.train()
+    total_loss = 0.0
+    
+    for x, y in loader:
+        x, y = x.to(device), y.to(device)
+        optimizer.zero_grad()
+        
+        preds = model(x)  # [batch_size, 1] (回归)
+        y = y.view(-1, 1).float()  # 保证与 preds 同形状 (batch_size,1)
 
-def calculate_accuracy(predictions, labels):
-    # Calculate the accuracy of the model's predictions
-    correct = (predictions == labels).sum().item()
-    total = labels.size(0)
-    accuracy = correct / total
-    return accuracy
+        loss = criterion(preds, y)
+        loss.backward()
+        optimizer.step()
+        
+        total_loss += loss.item() * x.size(0)
+    
+    avg_loss = total_loss / len(loader.dataset)
+    return avg_loss
 
-def save_model(model, file_path):
-    # Save the trained model to a file
-    import torch
-    torch.save(model.state_dict(), file_path)
 
-def load_model(model, file_path):
-    # Load a model's state from a file
-    import torch
-    model.load_state_dict(torch.load(file_path))
-    model.eval()  # Set the model to evaluation mode
-    return model
+def validate(model, loader, criterion, device):
+    """
+    验证/评估集上的评估逻辑
+    """
+    model.eval()
+    total_loss = 0.0
+    
+    with torch.no_grad():
+        for x, y in loader:
+            x, y = x.to(device), y.to(device)
+            preds = model(x)
+            y = y.view(-1, 1).float()
+
+            loss = criterion(preds, y)
+            total_loss += loss.item() * x.size(0)
+    
+    avg_loss = total_loss / len(loader.dataset)
+    return avg_loss
