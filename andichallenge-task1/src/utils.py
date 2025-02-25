@@ -1,44 +1,37 @@
 import torch
+from tqdm import tqdm
 
-def train_one_epoch(model, loader, criterion, optimizer, device):
-    """
-    单个epoch的训练逻辑
-    """
+def train(model, dataloader, criterion, optimizer, device):
     model.train()
-    total_loss = 0.0
-    
-    for x, y in loader:
+    running_loss = 0.0
+    # 使用 tqdm 包装 dataloader 以显示训练进度
+    pbar = tqdm(enumerate(dataloader), total=len(dataloader), desc="Training", leave=False)
+    for batch_idx, batch in pbar:
+        x, lengths, y = batch
         x, y = x.to(device), y.to(device)
         optimizer.zero_grad()
-        
-        preds = model(x)  # [batch_size, 1] (回归)
-        y = y.view(-1, 1).float()  # 保证与 preds 同形状 (batch_size,1)
-
-        loss = criterion(preds, y)
+        outputs = model(x, lengths)
+        loss = criterion(outputs.squeeze(), y)
         loss.backward()
         optimizer.step()
-        
-        total_loss += loss.item() * x.size(0)
-    
-    avg_loss = total_loss / len(loader.dataset)
-    return avg_loss
+        running_loss += loss.item() * x.size(0)
+        # 在进度条中显示当前 batch 的 loss
+        pbar.set_postfix({'loss': loss.item()})
+    epoch_loss = running_loss / len(dataloader.dataset)
+    return epoch_loss
 
-
-def validate(model, loader, criterion, device):
-    """
-    验证/评估集上的评估逻辑
-    """
+def evaluate(model, dataloader, criterion, device):
     model.eval()
-    total_loss = 0.0
-    
+    running_loss = 0.0
+    # 使用 tqdm 包装 dataloader 以显示验证进度
+    pbar = tqdm(dataloader, desc="Evaluating", leave=False)
     with torch.no_grad():
-        for x, y in loader:
+        for batch in pbar:
+            x, lengths, y = batch
             x, y = x.to(device), y.to(device)
-            preds = model(x)
-            y = y.view(-1, 1).float()
-
-            loss = criterion(preds, y)
-            total_loss += loss.item() * x.size(0)
-    
-    avg_loss = total_loss / len(loader.dataset)
-    return avg_loss
+            outputs = model(x, lengths)
+            loss = criterion(outputs.squeeze(), y)
+            running_loss += loss.item() * x.size(0)
+            pbar.set_postfix({'loss': loss.item()})
+    epoch_loss = running_loss / len(dataloader.dataset)
+    return epoch_loss

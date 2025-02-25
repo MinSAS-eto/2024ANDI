@@ -1,13 +1,13 @@
 import torch
 import torch.nn as nn
+from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence
 
 class CNNBiLSTM(nn.Module):
     """
     使用一维卷积 + 双向 LSTM 的示例网络，用于回归任务（预测扩散指数 α）。
-    假设输入 shape = [batch_size, T]。
+    假设输入 shape = [batch_size, T]，其中 T 为 padding 后的最大序列长度。
     """
     def __init__(self,
-                 input_length=50,
                  conv_channels=16,
                  lstm_hidden_size=32,
                  lstm_layers=1,
@@ -34,20 +34,41 @@ class CNNBiLSTM(nn.Module):
         num_directions = 2 if bidirectional else 1
         self.fc = nn.Linear(lstm_hidden_size * num_directions, 1)
 
-    def forward(self, x):
-        # x: [batch_size, T] => 先变成 [batch_size, 1, T]
+    def forward(self, x, lengths):
+        """
+        x: [batch_size, T]，其中 T 为 padding 后的最大序列长度
+        lengths: 原始序列长度列表，长度为 batch_size
+        """
+        # 将输入扩展为 [batch_size, 1, T]
         x = x.unsqueeze(1)
         x = self.conv1(x)        # => [batch_size, conv_channels, T]
         x = self.relu(x)
         
-        # LSTM需要 [batch_size, seq_len, feature_dim]
+        # 转换为 LSTM 所需的形状 [batch_size, T, conv_channels]
         x = x.transpose(1, 2)    # => [batch_size, T, conv_channels]
-
-        lstm_out, (h_n, c_n) = self.lstm(x)
-        # lstm_out: [batch_size, T, hidden_size * num_directions]
-
-        # 取最后时刻
-        last_out = lstm_out[:, -1, :]  # [batch_size, hidden_size * num_directions]
-
-        out = self.fc(last_out)  # => [batch_size, 1]
+        
+        # 为 pack_padded_sequence 做准备：需按照长度降序排列
+        lengths_tensor = torch.tensor(lengths, dtype=torch.long, device=x.device)
+        lengths_sorted, sorted_idx = torch.sort(lengths_tensor, descending=True)
+        x_sorted = x[sorted_idx]
+        
+        # pack sequence
+        packed_input = pack_padded_sequence(x_sorted, lengths_sorted.cpu(), batch_first=True, enforce_sorted=True)
+        packed_output, _ = self.lstm(packed_input)
+        
+        # pad packed sequence
+        output, _ = pad_packed_sequence(packed_output, batch_first=True)
+        # output: [batch_size, max_seq_len_in_batch, hidden_size * num_directions]
+        
+        # 取每个序列最后一个非 padding 的时间步输出
+        last_outputs = []
+        for i, seq_len in enumerate(lengths_sorted):
+            last_outputs.append(output[i, seq_len - 1, :])
+        last_outputs = torch.stack(last_outputs, dim=0)
+        
+        # 恢复原始排序
+        _, original_idx = torch.sort(sorted_idx)
+        last_outputs = last_outputs[original_idx]
+        
+        out = self.fc(last_outputs)  # => [batch_size, 1]
         return out
