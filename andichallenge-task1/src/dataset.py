@@ -12,11 +12,7 @@ class AnDiDataset(Dataset):
         self.Y = Y1[0]  # 确保选择正确的维度
         self.N = N
         self.tasks = tasks
-
-        # 打印生成的数据以进行检查
-        print("X1[0] length:", len(X1[0]))
-        print("Y1[0] length:", len(Y1[0]))
-
+        
     def __len__(self):
         # 返回样本数量
         return len(self.X)
