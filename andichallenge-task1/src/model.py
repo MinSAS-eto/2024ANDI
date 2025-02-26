@@ -32,6 +32,7 @@ class CNNBiLSTM(nn.Module):
         )
         
         num_directions = 2 if bidirectional else 1
+        self.dropout = nn.Dropout(p=0.5)
         self.fc = nn.Linear(lstm_hidden_size * num_directions, 1)
 
     def forward(self, x, lengths):
@@ -65,6 +66,7 @@ class CNNBiLSTM(nn.Module):
         for i, seq_len in enumerate(lengths_sorted):
             last_outputs.append(output[i, seq_len - 1, :])
         last_outputs = torch.stack(last_outputs, dim=0)
+        last_outputs = self.dropout(last_outputs)
         
         # 恢复原始排序
         _, original_idx = torch.sort(sorted_idx)
