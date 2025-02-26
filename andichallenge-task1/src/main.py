@@ -40,7 +40,7 @@ def main():
     tasks = 1
     batch_size = 32
     num_epochs = 50
-    learning_rate = 1e-3
+    learning_rate = 0.01
 
     # 1) 获取数据
     X, Y = load_andi_data(N, tasks)
