@@ -34,7 +34,7 @@ def create_and_fit_scaler(X):
 
 
 ###############################################################################
-# 3. 定义 Transform 用于数据标准化 和 时间反转
+# 3. 定义 Transform 用于数据标准化
 ###############################################################################
 class StandardScalerTransform:
     def __init__(self, scaler: StandardScaler):
@@ -47,7 +47,7 @@ class StandardScalerTransform:
         else:
             x_np = np.array(x, dtype=np.float32)
 
-        # reshape 成 [T, 1]
+        # reshape 成 [T, 1] 
         x_np = x_np.reshape(-1, 1)
         # 标准化
         x_scaled = self.scaler.transform(x_np)
@@ -55,17 +55,6 @@ class StandardScalerTransform:
         x_scaled = x_scaled.reshape(-1)
 
         return torch.tensor(x_scaled, dtype=torch.float32)
-
-class TimeReverseTransform:
-    def __call__(self, x):
-        # 时间反转
-        if isinstance(x, torch.Tensor):
-            x = torch.flip(x, dims=[0])
-        else:
-            x = np.array(x, dtype=np.float32)[::-1]
-            x = torch.tensor(x, dtype=torch.float32)
-        return x
-
 
 ###############################################################################
 # 4. 重新定义 AnDiDataset，不再在内部调用 challenge_theory_dataset，而是外部传入 X, Y
@@ -96,7 +85,7 @@ class AnDiDataset(Dataset):
 ###############################################################################
 # 5. collate_fn 保持不变，只是对预处理后的 x 做 padding
 ###############################################################################
-def collate_fn(batch):
+def collate_fn(batch, label_scaler=None):
     xs, ys = zip(*batch)
     xs_tensor = []
     lengths_x = []
@@ -113,6 +102,12 @@ def collate_fn(batch):
     padded_x = torch.nn.utils.rnn.pad_sequence(
         xs_tensor, batch_first=True, padding_value=0
     )
-    ys_tensor = torch.tensor(ys, dtype=torch.float32)
+    
+    # 标签标准化
+    if label_scaler:
+        ys_tensor = torch.tensor(label_scaler.transform(
+            np.array(ys).reshape(-1, 1)).flatten(), dtype=torch.float32)
+    else:
+        ys_tensor = torch.tensor(ys, dtype=torch.float32)
 
     return padded_x, lengths_x, ys_tensor
