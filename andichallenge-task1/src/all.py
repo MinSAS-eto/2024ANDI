@@ -204,8 +204,8 @@ class ImprovedCNNBiLSTM(nn.Module):
     输入: x -> [B, T] (T 为 padding 后的最大序列长度)
     """
     def __init__(self,
-                 conv_channels=64,
-                 lstm_hidden_size=128,
+                 conv_channels=256,
+                 lstm_hidden_size=512,
                  lstm_layers=4,   # 增加 LSTM 层数
                  bidirectional=True,
                  dropout_rate=0.5,
@@ -397,10 +397,10 @@ class TransformedSubset(torch.utils.data.Dataset):
 
 def main():
     # 超参数设置
-    N = 6000
+    N = 12000
     tasks = 1
     batch_size = 32
-    num_epochs = 50
+    num_epochs = 1
     learning_rate = 0.001
 
     # 1) 获取数据
@@ -443,8 +443,8 @@ def main():
     # 8) 定义模型、损失、优化器
     # 使用改进后的模型 ImprovedCNNBiLSTM，注意参数可根据任务调优
     model = ImprovedCNNBiLSTM(
-        conv_channels=64,         # 基础卷积通道数
-        lstm_hidden_size=128,      # LSTM 隐状态维度
+        conv_channels=256,         # 基础卷积通道数
+        lstm_hidden_size=512,      # LSTM 隐状态维度
         lstm_layers=4,            # 使用4层LSTM
         bidirectional=True,
         dropout_rate=0.5,
@@ -503,6 +503,7 @@ def main():
             torch.save(model.state_dict(), "best_model.pt")
         else:
             trigger_times += 1
+            print(f"patience {trigger_times}")
             if trigger_times >= patience:
                 print('Early stopping!')
                 break
@@ -514,11 +515,12 @@ def main():
     plt.title('Training & Validation Loss (Normalized)')
     plt.xlabel('Epoch')
     plt.ylabel('Loss')
+    plt.ylim(bottom=0, top=0.95) 
     plt.legend()
     plt.grid(True)
     plt.savefig("norm_loss_curve.png")
     plt.show()
-    
+
     # 如果有原始空间损失，绘制原始空间损失曲线
     if orig_val_losses:
         plt.figure(figsize=(8, 5))
@@ -533,8 +535,8 @@ def main():
     
     # 加载最优模型并评估
     best_model = ImprovedCNNBiLSTM(
-        conv_channels=64,
-        lstm_hidden_size=128,
+        conv_channels=256,
+        lstm_hidden_size=512,
         lstm_layers=4,
         bidirectional=True,
         dropout_rate=0.5,
