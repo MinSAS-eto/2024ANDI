@@ -7,10 +7,12 @@ def train(model, dataloader, criterion, optimizer, device):
     # 使用 tqdm 包装 dataloader 以显示训练进度
     pbar = tqdm(enumerate(dataloader), total=len(dataloader), desc="Training", leave=False)
     for batch_idx, batch in pbar:
-        x, lengths, y = batch
+        # 修改这里: 只解包两个元素
+        x, y = batch
         x, y = x.to(device), y.to(device)
         optimizer.zero_grad()
-        outputs = model(x, lengths)
+        # 修改这里: 不再传递lengths参数
+        outputs = model(x)
         loss = criterion(outputs.squeeze(), y)
         loss.backward()
         optimizer.step()
@@ -29,9 +31,11 @@ def evaluate(model, dataloader, criterion, device, y_scaler=None):
     
     with torch.no_grad():
         for batch in pbar:
-            x, lengths, y = batch
+            # 修改这里: 只解包两个元素
+            x, y = batch
             x, y = x.to(device), y.to(device)
-            outputs = model(x, lengths)
+            # 修改这里: 不再传递lengths参数
+            outputs = model(x)
             
             # 计算归一化空间中的损失（用于显示在进度条）
             loss = criterion(outputs.squeeze(), y)
@@ -65,3 +69,22 @@ def evaluate(model, dataloader, criterion, device, y_scaler=None):
     # 否则仅返回归一化空间的损失
     epoch_loss = running_loss / len(dataloader.dataset)
     return epoch_loss
+
+class TransformedSubset(torch.utils.data.Dataset):
+    """
+    包装一个 subset（通常由 random_split 返回的 Subset），
+    在 __getitem__ 中对 (x, y) 施加 transform(x)。
+    """
+    def __init__(self, subset, transform=None):
+        super().__init__()
+        self.subset = subset
+        self.transform = transform
+
+    def __len__(self):
+        return len(self.subset)
+
+    def __getitem__(self, idx):
+        x, y = self.subset[idx]
+        if self.transform:
+            x = self.transform(x)
+        return x, y
