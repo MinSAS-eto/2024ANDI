@@ -22,7 +22,22 @@ def train(model, dataloader, criterion, optimizer, device):
     epoch_loss = running_loss / len(dataloader.dataset)
     return epoch_loss
 
-def evaluate(model, dataloader, criterion, device, y_scaler=None):
+def evaluate(model, dataloader, criterion, device, y_scaler=None, return_predictions=False):
+    """
+    评估模型性能
+    
+    参数:
+    - model: 要评估的模型
+    - dataloader: 数据加载器
+    - criterion: 损失函数
+    - device: 计算设备
+    - y_scaler: 标签标准化器（如果有）
+    - return_predictions: 是否返回预测和目标值，默认为False
+    
+    返回:
+    - 如果return_predictions=False: 仅返回损失值
+    - 如果return_predictions=True: 返回(损失值, 预测值, 目标值)元组
+    """
     model.eval()
     running_loss = 0.0
     predictions = []
@@ -31,44 +46,35 @@ def evaluate(model, dataloader, criterion, device, y_scaler=None):
     
     with torch.no_grad():
         for batch in pbar:
-            # 修改这里: 只解包两个元素
+            # 只解包两个元素
             x, y = batch
             x, y = x.to(device), y.to(device)
-            # 修改这里: 不再传递lengths参数
+            # 不再传递lengths参数
             outputs = model(x)
             
-            # 计算归一化空间中的损失（用于显示在进度条）
+            # 计算损失（模型输出直接与未标准化的标签比较）
             loss = criterion(outputs.squeeze(), y)
             
-            # 收集预测和目标值，用于后续可能的逆变换
-            predictions.append(outputs.cpu())
-            targets.append(y.cpu())
+            # 只有在需要返回预测值时才收集
+            if return_predictions:
+                predictions.append(outputs.cpu())
+                targets.append(y.cpu())
             
             running_loss += loss.item() * x.size(0)
             pbar.set_postfix({'loss': loss.item()})
     
-    # 如果提供了y_scaler，则在原始空间计算损失
-    if y_scaler is not None:
+    # 计算整体损失
+    epoch_loss = running_loss / len(dataloader.dataset)
+    
+    # 根据参数决定返回内容
+    if return_predictions:
         # 合并所有预测和目标
         all_preds = torch.cat(predictions)
         all_targets = torch.cat(targets)
-        
-        # 逆变换回原始空间
-        orig_preds = torch.tensor(y_scaler.inverse_transform(
-            all_preds.numpy().reshape(-1, 1))).squeeze()
-        orig_targets = torch.tensor(y_scaler.inverse_transform(
-            all_targets.numpy().reshape(-1, 1))).squeeze()
-        
-        # 计算原始空间的损失
-        orig_loss = criterion(orig_preds, orig_targets)
-        
-        # 返回两种损失
-        norm_loss = running_loss / len(dataloader.dataset)
-        return norm_loss, orig_loss.item()
-    
-    # 否则仅返回归一化空间的损失
-    epoch_loss = running_loss / len(dataloader.dataset)
-    return epoch_loss
+        return epoch_loss, all_preds.numpy(), all_targets.numpy()
+    else:
+        # 只返回损失值
+        return epoch_loss
 
 class TransformedSubset(torch.utils.data.Dataset):
     """

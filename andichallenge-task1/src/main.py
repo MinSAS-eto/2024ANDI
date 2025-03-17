@@ -20,14 +20,14 @@ from model import EquilenCNNBiLSTMAttention
 
 def main():
     # 超参数设置
-    N = 50                # 数据量设置
+    N = 200               # 数据量设置
     Length = 100          # 轨迹长度
     batch_size = 32       # 批量大小
     num_epochs = 200      # 训练轮数
     learning_rate = 0.001 # 初始学习率
 
-    # 1) 获取数据
-    X, Y = load_andi_data(N, Length)
+        # 1) 获取数据
+    X, Y, model_ids = load_andi_data(N, Length)
 
     # 2) 用 X 来 fit scaler
     scaler = create_and_fit_scaler(X)
@@ -44,26 +44,47 @@ def main():
         raw_dataset, [train_size, val_size, test_size]
     )
 
-    # 5) 只在训练集上做「标准化+时间反转」，验证/测试集只做「标准化」
+    # 5) 提取并保存测试集数据
+    test_indices = test_subset.indices
+    test_features = []
+    test_labels = []
+    test_model_ids = []
+
+    for idx in test_indices:
+        x, y = raw_dataset[idx]
+        test_features.append(x)
+        test_labels.append(y)
+        test_model_ids.append(model_ids[idx])  # 确保索引对应
+
+    # 将测试集保存为numpy格式
+    np.savez('test_dataset.npz', 
+             features=np.array(test_features, dtype=object),
+             labels=np.array(test_labels),
+             model_ids=np.array(test_model_ids),  # 保存模型ID
+             indices=np.array(test_indices))
+    print(f"已保存测试集数据到 test_dataset.npz，包含 {len(test_indices)} 个样本")
+
+    # 6) 只在训练集上做「标准化+时间反转」，验证/测试集只做「标准化」
     train_transform = T.Compose([standardize, TimeReversedTransform(p=0.5)])
     val_transform = standardize
     test_transform = standardize
 
-    # 6) 用包装器给 subset 加上不同 transforms
+    # 7) 用包装器给 subset 加上不同 transforms
     train_dataset = TransformedSubset(train_subset, transform=train_transform)
     val_dataset   = TransformedSubset(val_subset,   transform=val_transform)
     test_dataset  = TransformedSubset(test_subset,  transform=test_transform)
     print(f"训练集大小: {len(train_subset)}")
+    print(f"验证集大小: {len(val_subset)}")
+    print(f"测试集大小: {len(test_subset)}")
     print(f"理论总批次数: {len(train_subset) // batch_size * num_epochs}")
 
-    # 7) 构造 DataLoader
     train_loader = DataLoader(train_dataset, batch_size=batch_size, 
                               shuffle=True, collate_fn=collate_fn)
     val_loader = DataLoader(val_dataset, batch_size=batch_size, 
                             shuffle=False, collate_fn=collate_fn)
     test_loader = DataLoader(test_dataset, batch_size=batch_size, 
                              shuffle=False, collate_fn=collate_fn)
-
+    
     # 8) 定义新模型、损失、优化器
     model = EquilenCNNBiLSTMAttention(
         input_size=1,             # 输入特征维度
@@ -80,7 +101,7 @@ def main():
     optimizer = optim.AdamW(model.parameters(), lr=learning_rate, weight_decay=2e-4)
     
     scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
-        optimizer, mode='min', factor=0.5, patience=8)
+        optimizer, mode='min', factor=0.5, patience=5)
     
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print("CUDA是否可用:", torch.cuda.is_available())
@@ -96,7 +117,7 @@ def main():
     train_losses = []
     val_losses = []
     best_val_loss = float('inf')
-    patience = 24        # 早停耐心度
+    patience = 15        # 早停耐心度
     trigger_times = 0     # 早停计数器
     lr_changes = 0        # 学习率变更次数
     early_stop_active = False  # 早停机制是否激活的标志
