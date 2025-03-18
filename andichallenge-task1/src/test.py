@@ -279,18 +279,9 @@ def plot_combined_models_hist2d(y_true, y_pred, model_ids):
     并在每个子图上绘制:
       - 理想对角线 (y = x)
       - 分段平均曲线 (将 x 轴分为若干 bin, 计算每个 bin 中 y 的平均值并连线)
-    
-    参数：
-    ----------
-    y_true : array-like
-        真实扩散指数 α 的数组
-    y_pred : array-like
-        预测扩散指数 α 的数组
-    model_ids : array-like
-        每个样本所属的模型类型 ID，需与下面的 model_names 对应
     """
     
-    # 这里可根据需要自定义模型 ID 与名称的映射
+    # 模型名称映射
     model_names = {
         0: "AATM",
         1: "CTRW",
@@ -302,10 +293,9 @@ def plot_combined_models_hist2d(y_true, y_pred, model_ids):
     # 获取所有出现的模型类型（去重）
     unique_models = np.unique(model_ids)
     
-    # 使用深色背景风格（可根据个人喜好选择）
+    # 使用深色背景风格
     plt.style.use('dark_background')
-    
-    # 创建子图：根据模型数自动生成列数，这里假设有 5 种模型
+    # 创建子图：根据模型数自动生成列数
     fig, axes = plt.subplots(1, len(unique_models), 
                              figsize=(4 * len(unique_models), 4), 
                              sharex=True, sharey=True)
@@ -313,7 +303,7 @@ def plot_combined_models_hist2d(y_true, y_pred, model_ids):
     if len(unique_models) == 1:
         axes = [axes]
     
-    # 为了统一颜色条，我们先保存最后一个 im 对象，再在循环外添加 colorbar
+    # 为了统一颜色条，我们先保存最后一个 im 对象
     im_list = []
     
     for i, model_id in enumerate(unique_models):
@@ -325,27 +315,24 @@ def plot_combined_models_hist2d(y_true, y_pred, model_ids):
         y = y_pred[mask]
         
         # 使用 2D 直方图来表示密度 (hist2d)
-        # bins 可根据需要调整，range 设置到你想要观察的 α 范围
-        # cmin=1 表示计数小于 1 的格子不显示颜色(可去掉)
         h = ax.hist2d(x, y, 
-                      bins=50,          # 直方图网格数目，可根据数据量大小适当调整
-                      range=[[0, 2], [0, 2]],  # 这里假设 α 范围在 [0, 2]
-                      cmap='jet',       # 颜色映射，可换成你喜欢的
+                      bins=50,
+                      range=[[0, 2], [0, 2]],
+                      cmap='jet',
                       cmin=1)
         
         # 保存 im 对象以便后续统一加 colorbar
-        im_list.append(h[3])  # h 的返回值: (counts, xedges, yedges, Image)
+        im_list.append(h[3])
         
         # 绘制理想对角线 (y = x)
-        ax.plot([0, 2], [0, 2], ls='--', color='white', linewidth=1)
+        ax.plot([0, 2], [0, 2], ls='--', color='black', linewidth=1)
         
-        # 计算分段平均曲线（先将 x 轴分 bin，然后在每个 bin 中计算 y 的平均）
-        bin_edges = np.linspace(0, 2, 20)  # 可根据需要调整分段数
+        # 计算分段平均曲线
+        bin_edges = np.linspace(0, 2, 20)
         bin_centers = 0.5 * (bin_edges[:-1] + bin_edges[1:])
         digitized = np.digitize(x, bin_edges)
         bin_means = []
         for k in range(1, len(bin_edges)):
-            # 找到第 k 个 bin 的所有 y
             y_in_bin = y[digitized == k]
             if len(y_in_bin) > 0:
                 bin_means.append(np.mean(y_in_bin))
@@ -355,7 +342,7 @@ def plot_combined_models_hist2d(y_true, y_pred, model_ids):
         # 在图上绘制这条平均曲线
         ax.plot(bin_centers, bin_means, color='white', linewidth=2)
         
-        # 设置坐标范围 (如需自适应可去掉)
+        # 设置坐标范围
         ax.set_xlim(0, 2)
         ax.set_ylim(0, 2)
         
@@ -368,12 +355,14 @@ def plot_combined_models_hist2d(y_true, y_pred, model_ids):
             ax.set_ylabel('Measured α', fontsize=12)
         ax.set_xlabel('Ground truth α', fontsize=12)
     
-    # 统一添加颜色条（放在右侧）
-    # 如果想让每个子图都有自己的颜色条，可以在循环内单独加
-    cbar = fig.colorbar(im_list[-1], ax=axes, fraction=0.02, pad=0.02)
+    # 调整布局，为颜色条留出空间
+    plt.tight_layout(rect=[0, 0, 0.9, 1])
+    
+    # 在整个图形的最右侧添加颜色条 (而不是每个子图旁边)
+    cbar_ax = fig.add_axes([0.92, 0.15, 0.02, 0.7])  # [left, bottom, width, height]
+    cbar = fig.colorbar(im_list[-1], cax=cbar_ax)
     cbar.set_label('Counts', fontsize=12)
     
-    plt.tight_layout()
     plt.savefig('combined_models_hist2d.png', dpi=300)
     plt.show()
 
@@ -536,6 +525,7 @@ def main():
     plt.title('Diffusion Exponent Prediction Performance and Density')
     
     # Add grid and legend
+    
     plt.grid(True, linestyle='--', alpha=0.7)
     plt.legend(loc='best')
     
