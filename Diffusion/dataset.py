@@ -1,16 +1,18 @@
 import numpy as np
 import random
 import torch
-from torch.utils.data import Dataset
+from torch.utils.data import Dataset, random_split
 import scipy.stats as stats
 
-def load_andi_data(N, Length):
+def load_andi_data(N, Length, add_noise=True, noise_level=0.1):
     """
     加载ANDI数据集轨迹，包含不同的异常扩散模型
     
     参数:
         N: 每个模型的轨迹数量
         Length: 每个轨迹的长度
+        add_noise: 是否添加噪声，默认为True
+        noise_level: 噪声水平，默认为0.1 (10%)
         
     返回:
         X: 轨迹列表
@@ -28,7 +30,13 @@ def load_andi_data(N, Length):
     data5 = AD_instance.create_dataset(T=Length, N_models=N, exponents=np.random.uniform(0.05, 2.0, size=N), models=4, dimension=1)
 
     # 合并所有数据
-    all_data = np.vstack([data1, data2, data3, data4, data5])
+    merged_all_data = np.vstack([data1, data2, data3, data4, data5])
+    
+    # 根据参数决定是否添加噪声
+    if add_noise:
+        all_data = AD_instance.create_noisy_diffusion_dataset(merged_all_data, T=Length)
+    else:
+        all_data = merged_all_data  # 不添加噪声，直接使用原始数据
 
     # 提取轨迹、标签和模型ID
     X = []
@@ -114,3 +122,65 @@ class TrajectoryDataset(Dataset):
             return segment, target, exponent, model_id
         else:
             return segment, target, exponent
+
+def split_dataset(dataset, test_size=0.2, val_size=0.1, seed=42):
+    """
+    将数据集分割为训练集、验证集和测试集
+    
+    参数:
+        dataset: 要分割的数据集
+        test_size: 测试集的比例
+        val_size: 验证集的比例
+        seed: 随机种子
+        
+    返回:
+        train_dataset, val_dataset, test_dataset: 分割后的数据集
+    """
+    # 设置随机种子以确保可复现性
+    generator = torch.Generator().manual_seed(seed)
+    
+    # 计算各部分大小
+    total_size = len(dataset)
+    test_size_abs = int(total_size * test_size)
+    val_size_abs = int(total_size * val_size)
+    train_size = total_size - test_size_abs - val_size_abs
+    
+    # 分割数据集
+    train_dataset, val_dataset, test_dataset = random_split(
+        dataset, 
+        [train_size, val_size_abs, test_size_abs],
+        generator=generator
+    )
+    
+    return train_dataset, val_dataset, test_dataset
+
+# 同时加载清洁和有噪声的数据集的实用函数
+def load_clean_and_noisy_data(N, Length, noise_level=0.1):
+    """
+    同时加载清洁和带噪声的数据集
+    适合扩散模型训练（清洁数据）和验证（噪声数据）
+    
+    参数:
+        N: 每个模型的轨迹数量
+        Length: 每个轨迹的长度
+        noise_level: 噪声数据的噪声水平
+        
+    返回:
+        clean_data: (X, Y, model_ids) 干净数据的元组
+        noisy_data: (X, Y, model_ids) 带噪声数据的元组
+    """
+    # 加载相同种子的数据以保持一致性
+    random_state = random.getstate()
+    np_state = np.random.get_state()
+    
+    # 加载清洁数据
+    X_clean, Y_clean, model_ids_clean = load_andi_data(N, Length, add_noise=False)
+    
+    # 重置随机状态以获取相同的轨迹
+    random.setstate(random_state)
+    np.random.set_state(np_state)
+    
+    # 加载噪声数据
+    X_noisy, Y_noisy, model_ids_noisy = load_andi_data(N, Length, add_noise=True, noise_level=noise_level)
+    
+    return (X_clean, Y_clean, model_ids_clean), (X_noisy, Y_noisy, model_ids_noisy)

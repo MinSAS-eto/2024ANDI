@@ -204,8 +204,16 @@ class CNNBiLSTMDiffusionExponent(nn.Module):
             if 'weight' in name:
                 if 'lstm' in name:
                     nn.init.orthogonal_(param)
-                elif 'fc' in name or 'linear' in name or 'conv' in name:
-                    nn.init.kaiming_normal_(param, nonlinearity='relu')
+                elif ('fc' in name or 'linear' in name or 'conv' in name):
+                    if param.dim() >= 2:  # 确保参数至少有2维
+                        nn.init.kaiming_normal_(param, nonlinearity='relu')
+                    else:  # 对于1维参数
+                        nn.init.normal_(param, mean=0.0, std=0.02)
+                else:  # 其他权重参数
+                    if param.dim() >= 2:
+                        nn.init.xavier_normal_(param)
+                    else:
+                        nn.init.normal_(param, mean=0.0, std=0.02)
             elif 'bias' in name:
                 nn.init.zeros_(param)
     
@@ -409,7 +417,7 @@ class AnomalousDiffusionExponentModel:
             exponent_loss = F.mse_loss(pred_exponents, target_exponents)
             
             # 组合损失（加权和）
-            total_loss = denoising_loss + 0.1 * exponent_loss
+            total_loss = denoising_loss + exponent_loss
             
             return total_loss, denoising_loss, exponent_loss
         
@@ -433,12 +441,13 @@ class AnomalousDiffusionExponentModel:
         
         return exponent
     
-    def sample(self, shape, guide_with_exponent=None, num_steps=None):
+    def sample(self, shape, guide_with_exponent=None, num_steps=None, x_noisy=None):
         """
         使用可选指数引导采样轨迹
         shape: 样本形状的元组 [B, T, C]
         guide_with_exponent: 用于引导生成的可选目标指数
         num_steps: 采样步骤数（如果为None，则使用self.timesteps）
+        x_noisy: 可选的带噪声轨迹作为起点
         """
         device = self.device
         batch_size = shape[0]
@@ -451,8 +460,8 @@ class AnomalousDiffusionExponentModel:
         
         timesteps = self.timesteps if num_steps is None else num_steps
         
-        # 从纯噪声开始
-        x = torch.randn(shape, device=device)
+        # 从纯噪声开始或使用提供的噪声轨迹
+        x = torch.randn(shape, device=device) if x_noisy is None else x_noisy
         
         # 迭代采样（反向扩散过程）
         for i in torch.arange(timesteps - 1, -1, -1).to(device):
@@ -507,6 +516,26 @@ class AnomalousDiffusionExponentModel:
         final_exponent = self.predict_exponent(x)
         
         return x, final_exponent
+    
+    def predict_exponent_with_denoising(self, x_noisy, denoise_steps=100):
+        """
+        通过先去噪再预测来获取更准确的扩散指数预测
+        
+        x_noisy: 带噪声的轨迹 [B, T, C]
+        denoise_steps: 去噪步数
+        """
+        # 1. 首先对噪声轨迹进行去噪
+        denoised_x, _ = self.sample(
+            x_noisy.shape,
+            guide_with_exponent=None,  # 不使用指数引导
+            num_steps=denoise_steps,
+            x_noisy=x_noisy  # 使用输入的噪声轨迹作为起点
+        )
+        
+        # 2. 然后用去噪后的轨迹预测指数
+        pred_exponent = self.predict_exponent(denoised_x)
+        
+        return pred_exponent, denoised_x
 
 
 # 计算异常扩散指标的函数
@@ -551,3 +580,60 @@ def calculate_anomalous_diffusion_metrics(trajectory, dt=1.0):
     exponent = (log_msd[:, -1, :] - log_msd[:, 0, :]) / (log_time[:, -1, :] - log_time[:, 0, :])
     
     return msd, exponent
+
+
+def evaluate_with_denoising(model, dataloader, device, denoise_steps=50):
+    """评估去噪后的模型在数据集上的性能"""
+    model.model.eval()
+    all_true_exponents = []
+    all_pred_exponents = []
+    all_pred_exponents_denoised = []
+    total_loss = 0.0
+    total_loss_denoised = 0.0
+    
+    with torch.no_grad():
+        for batch in dataloader:
+            segments, _, true_exponents, _ = batch
+            segments = segments.to(device)
+            true_exponents = true_exponents.to(device)
+            
+            # 常规预测
+            pred_exponents = model.predict_exponent(segments)
+            loss = nn.MSELoss()(pred_exponents, true_exponents)
+            
+            # 去噪后预测
+            pred_exponents_denoised, _ = model.predict_exponent_with_denoising(
+                segments, denoise_steps=denoise_steps
+            )
+            loss_denoised = nn.MSELoss()(pred_exponents_denoised, true_exponents)
+            
+            # 收集结果
+            all_true_exponents.append(true_exponents.cpu().numpy())
+            all_pred_exponents.append(pred_exponents.cpu().numpy())
+            all_pred_exponents_denoised.append(pred_exponents_denoised.cpu().numpy())
+            
+            # 累计损失
+            total_loss += loss.item() * segments.size(0)
+            total_loss_denoised += loss_denoised.item() * segments.size(0)
+    
+    # 处理结果
+    all_true_exponents = np.concatenate(all_true_exponents)
+    all_pred_exponents = np.concatenate(all_pred_exponents)
+    all_pred_exponents_denoised = np.concatenate(all_pred_exponents_denoised)
+    
+    # 计算指标
+    avg_loss = total_loss / len(dataloader.dataset)
+    avg_loss_denoised = total_loss_denoised / len(dataloader.dataset)
+    
+    rmse = np.sqrt(mean_squared_error(all_true_exponents, all_pred_exponents))
+    r2 = r2_score(all_true_exponents, all_pred_exponents)
+    
+    rmse_denoised = np.sqrt(mean_squared_error(all_true_exponents, all_pred_exponents_denoised))
+    r2_denoised = r2_score(all_true_exponents, all_pred_exponents_denoised)
+    
+    model.model.train()
+    return {
+        "direct": (avg_loss, rmse, r2, all_pred_exponents),
+        "denoised": (avg_loss_denoised, rmse_denoised, r2_denoised, all_pred_exponents_denoised),
+        "true": all_true_exponents
+    }

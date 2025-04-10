@@ -1,0 +1,41 @@
+2025-04-10 11:51:00,882 - __main__ - INFO - 使用设备: cuda
+2025-04-10 11:51:00,883 - __main__ - INFO - 参数: {'data_dir': './data', 'save_dir': './checkpoints', 'batch_size': 32, 'epochs': 50, 'lr': 0.001, 'seed': 42, 'n_trajectories': 1000, 'trajectory_length': 200, 'segment_length': 100, 'prediction_length': 100, 'timesteps': 500, 'device': 'cuda', 'test_size': 0.2, 'val_size': 0.1, 'resume': False, 'checkpoint': None}
+2025-04-10 11:51:00,884 - __main__ - INFO - 加载ANDI数据集...
+2025-04-10 11:54:49,574 - __main__ - INFO - 使用设备: cuda
+2025-04-10 11:54:49,574 - __main__ - INFO - 参数: {'data_dir': './data', 'save_dir': './checkpoints', 'batch_size': 32, 'epochs': 50, 'lr': 0.001, 'seed': 42, 'n_trajectories': 50, 'trajectory_length': 200, 'segment_length': 100, 'prediction_length': 100, 'timesteps': 500, 'device': 'cuda', 'test_size': 0.2, 'val_size': 0.1, 'resume': False, 'checkpoint': None}
+2025-04-10 11:54:49,575 - __main__ - INFO - 加载ANDI数据集...
+2025-04-10 11:55:20,555 - __main__ - INFO - 使用设备: cuda
+2025-04-10 11:55:20,555 - __main__ - INFO - 参数: {'data_dir': './data', 'save_dir': './checkpoints', 'batch_size': 32, 'epochs': 50, 'lr': 0.001, 'seed': 42, 'n_trajectories': 50, 'trajectory_length': 200, 'segment_length': 100, 'prediction_length': 100, 'timesteps': 500, 'device': 'cuda', 'test_size': 0.2, 'val_size': 0.1, 'resume': False, 'checkpoint': None}
+2025-04-10 11:55:20,556 - __main__ - INFO - 加载ANDI数据集...
+2025-04-10 11:55:25,412 - __main__ - INFO - 数据集分割: 训练=8750, 验证=1250, 测试=2500
+2025-04-10 11:59:14,638 - __main__ - INFO - 使用设备: cuda
+2025-04-10 11:59:14,638 - __main__ - INFO - 参数: {'data_dir': './data', 'save_dir': './checkpoints', 'batch_size': 32, 'epochs': 50, 'lr': 0.001, 'seed': 42, 'n_trajectories': 50, 'trajectory_length': 200, 'segment_length': 100, 'prediction_length': 100, 'timesteps': 500, 'device': 'cuda', 'test_size': 0.2, 'val_size': 0.1, 'resume': False, 'checkpoint': None}
+2025-04-10 11:59:14,638 - __main__ - INFO - 加载ANDI数据集...
+2025-04-10 11:59:19,608 - __main__ - INFO - 数据集分割: 训练=8750, 验证=1250, 测试=2500
+2025-04-10 11:59:21,886 - __main__ - INFO - 开始训练...
+2025-04-10 12:00:08,906 - __main__ - INFO - 模型保存在 ./checkpoints\best_model.pth
+2025-04-10 12:00:08,906 - __main__ - INFO - 保存了新的最佳模型，验证损失: 0.3073
+2025-04-10 12:00:54,169 - __main__ - INFO - 模型保存在 ./checkpoints\best_model.pth
+2025-04-10 12:00:54,169 - __main__ - INFO - 保存了新的最佳模型，验证损失: 0.1778
+2025-04-10 12:01:38,558 - __main__ - INFO - 模型保存在 ./checkpoints\best_model.pth
+2025-04-10 12:01:38,558 - __main__ - INFO - 保存了新的最佳模型，验证损失: 0.1495
+2025-04-10 12:02:23,883 - __main__ - INFO - 模型保存在 ./checkpoints\best_model.pth
+2025-04-10 12:02:23,883 - __main__ - INFO - 保存了新的最佳模型，验证损失: 0.1306
+2025-04-10 12:03:07,012 - __main__ - INFO - 模型保存在 ./checkpoints\best_model.pth
+2025-04-10 12:03:07,012 - __main__ - INFO - 保存了新的最佳模型，验证损失: 0.1124
+2025-04-10 12:04:34,006 - __main__ - INFO - 模型保存在 ./checkpoints\best_model.pth
+2025-04-10 12:04:34,006 - __main__ - INFO - 保存了新的最佳模型，验证损失: 0.1053
+2025-04-10 12:05:16,397 - __main__ - INFO - 模型保存在 ./checkpoints\best_model.pth
+2025-04-10 12:05:16,397 - __main__ - INFO - 保存了新的最佳模型，验证损失: 0.0855
+2025-04-10 12:06:41,376 - __main__ - INFO - 模型保存在 ./checkpoints\model_epoch_10.pth
+2025-04-10 12:07:24,166 - __main__ - INFO - 模型保存在 ./checkpoints\best_model.pth
+2025-04-10 12:07:24,166 - __main__ - INFO - 保存了新的最佳模型，验证损失: 0.0847
+2025-04-10 12:08:06,918 - __main__ - INFO - 模型保存在 ./checkpoints\best_model.pth
+2025-04-10 12:08:06,918 - __main__ - INFO - 保存了新的最佳模型，验证损失: 0.0809
+2025-04-10 12:08:49,578 - __main__ - INFO - 模型保存在 ./checkpoints\best_model.pth
+2025-04-10 12:08:49,578 - __main__ - INFO - 保存了新的最佳模型，验证损失: 0.0786
+2025-04-10 12:10:34,729 - __main__ - INFO - 模型保存在 ./checkpoints\best_model.pth
+2025-04-10 12:10:34,729 - __main__ - INFO - 保存了新的最佳模型，验证损失: 0.0729
+2025-04-10 12:14:06,813 - __main__ - INFO - 模型保存在 ./checkpoints\model_epoch_20.pth
+2025-04-10 12:15:31,837 - __main__ - INFO - 模型保存在 ./checkpoints\best_model.pth
+2025-04-10 12:15:31,837 - __main__ - INFO - 保存了新的最佳模型，验证损失: 0.0687

@@ -26,8 +26,9 @@ def load_andi_data(N, Length):
     data5 = AD_instance.create_dataset(T=Length, N_models=N, exponents=np.random.uniform(0.05, 2.0, size=N), models=4, dimension=1)
 
     # 合并所有数据
-    all_data = np.vstack([data1, data2, data3, data4, data5])
-
+    merged_all_data = np.vstack([data1, data2, data3, data4, data5])
+    all_data = AD_instance.create_noisy_diffusion_dataset(merged_all_data, T=Length)
+    
     # 提取轨迹、标签和模型ID
     X = []
     Y = []
