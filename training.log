@@ -1,41 +1,121 @@
-2025-04-10 11:51:00,882 - __main__ - INFO - Ê¹ÓÃÉè±¸: cuda
-2025-04-10 11:51:00,883 - __main__ - INFO - ²ÎÊı: {'data_dir': './data', 'save_dir': './checkpoints', 'batch_size': 32, 'epochs': 50, 'lr': 0.001, 'seed': 42, 'n_trajectories': 1000, 'trajectory_length': 200, 'segment_length': 100, 'prediction_length': 100, 'timesteps': 500, 'device': 'cuda', 'test_size': 0.2, 'val_size': 0.1, 'resume': False, 'checkpoint': None}
-2025-04-10 11:51:00,884 - __main__ - INFO - ¼ÓÔØANDIÊı¾İ¼¯...
-2025-04-10 11:54:49,574 - __main__ - INFO - Ê¹ÓÃÉè±¸: cuda
-2025-04-10 11:54:49,574 - __main__ - INFO - ²ÎÊı: {'data_dir': './data', 'save_dir': './checkpoints', 'batch_size': 32, 'epochs': 50, 'lr': 0.001, 'seed': 42, 'n_trajectories': 50, 'trajectory_length': 200, 'segment_length': 100, 'prediction_length': 100, 'timesteps': 500, 'device': 'cuda', 'test_size': 0.2, 'val_size': 0.1, 'resume': False, 'checkpoint': None}
-2025-04-10 11:54:49,575 - __main__ - INFO - ¼ÓÔØANDIÊı¾İ¼¯...
-2025-04-10 11:55:20,555 - __main__ - INFO - Ê¹ÓÃÉè±¸: cuda
-2025-04-10 11:55:20,555 - __main__ - INFO - ²ÎÊı: {'data_dir': './data', 'save_dir': './checkpoints', 'batch_size': 32, 'epochs': 50, 'lr': 0.001, 'seed': 42, 'n_trajectories': 50, 'trajectory_length': 200, 'segment_length': 100, 'prediction_length': 100, 'timesteps': 500, 'device': 'cuda', 'test_size': 0.2, 'val_size': 0.1, 'resume': False, 'checkpoint': None}
-2025-04-10 11:55:20,556 - __main__ - INFO - ¼ÓÔØANDIÊı¾İ¼¯...
-2025-04-10 11:55:25,412 - __main__ - INFO - Êı¾İ¼¯·Ö¸î: ÑµÁ·=8750, ÑéÖ¤=1250, ²âÊÔ=2500
-2025-04-10 11:59:14,638 - __main__ - INFO - Ê¹ÓÃÉè±¸: cuda
-2025-04-10 11:59:14,638 - __main__ - INFO - ²ÎÊı: {'data_dir': './data', 'save_dir': './checkpoints', 'batch_size': 32, 'epochs': 50, 'lr': 0.001, 'seed': 42, 'n_trajectories': 50, 'trajectory_length': 200, 'segment_length': 100, 'prediction_length': 100, 'timesteps': 500, 'device': 'cuda', 'test_size': 0.2, 'val_size': 0.1, 'resume': False, 'checkpoint': None}
-2025-04-10 11:59:14,638 - __main__ - INFO - ¼ÓÔØANDIÊı¾İ¼¯...
-2025-04-10 11:59:19,608 - __main__ - INFO - Êı¾İ¼¯·Ö¸î: ÑµÁ·=8750, ÑéÖ¤=1250, ²âÊÔ=2500
-2025-04-10 11:59:21,886 - __main__ - INFO - ¿ªÊ¼ÑµÁ·...
-2025-04-10 12:00:08,906 - __main__ - INFO - Ä£ĞÍ±£´æÔÚ ./checkpoints\best_model.pth
-2025-04-10 12:00:08,906 - __main__ - INFO - ±£´æÁËĞÂµÄ×î¼ÑÄ£ĞÍ£¬ÑéÖ¤ËğÊ§: 0.3073
-2025-04-10 12:00:54,169 - __main__ - INFO - Ä£ĞÍ±£´æÔÚ ./checkpoints\best_model.pth
-2025-04-10 12:00:54,169 - __main__ - INFO - ±£´æÁËĞÂµÄ×î¼ÑÄ£ĞÍ£¬ÑéÖ¤ËğÊ§: 0.1778
-2025-04-10 12:01:38,558 - __main__ - INFO - Ä£ĞÍ±£´æÔÚ ./checkpoints\best_model.pth
-2025-04-10 12:01:38,558 - __main__ - INFO - ±£´æÁËĞÂµÄ×î¼ÑÄ£ĞÍ£¬ÑéÖ¤ËğÊ§: 0.1495
-2025-04-10 12:02:23,883 - __main__ - INFO - Ä£ĞÍ±£´æÔÚ ./checkpoints\best_model.pth
-2025-04-10 12:02:23,883 - __main__ - INFO - ±£´æÁËĞÂµÄ×î¼ÑÄ£ĞÍ£¬ÑéÖ¤ËğÊ§: 0.1306
-2025-04-10 12:03:07,012 - __main__ - INFO - Ä£ĞÍ±£´æÔÚ ./checkpoints\best_model.pth
-2025-04-10 12:03:07,012 - __main__ - INFO - ±£´æÁËĞÂµÄ×î¼ÑÄ£ĞÍ£¬ÑéÖ¤ËğÊ§: 0.1124
-2025-04-10 12:04:34,006 - __main__ - INFO - Ä£ĞÍ±£´æÔÚ ./checkpoints\best_model.pth
-2025-04-10 12:04:34,006 - __main__ - INFO - ±£´æÁËĞÂµÄ×î¼ÑÄ£ĞÍ£¬ÑéÖ¤ËğÊ§: 0.1053
-2025-04-10 12:05:16,397 - __main__ - INFO - Ä£ĞÍ±£´æÔÚ ./checkpoints\best_model.pth
-2025-04-10 12:05:16,397 - __main__ - INFO - ±£´æÁËĞÂµÄ×î¼ÑÄ£ĞÍ£¬ÑéÖ¤ËğÊ§: 0.0855
-2025-04-10 12:06:41,376 - __main__ - INFO - Ä£ĞÍ±£´æÔÚ ./checkpoints\model_epoch_10.pth
-2025-04-10 12:07:24,166 - __main__ - INFO - Ä£ĞÍ±£´æÔÚ ./checkpoints\best_model.pth
-2025-04-10 12:07:24,166 - __main__ - INFO - ±£´æÁËĞÂµÄ×î¼ÑÄ£ĞÍ£¬ÑéÖ¤ËğÊ§: 0.0847
-2025-04-10 12:08:06,918 - __main__ - INFO - Ä£ĞÍ±£´æÔÚ ./checkpoints\best_model.pth
-2025-04-10 12:08:06,918 - __main__ - INFO - ±£´æÁËĞÂµÄ×î¼ÑÄ£ĞÍ£¬ÑéÖ¤ËğÊ§: 0.0809
-2025-04-10 12:08:49,578 - __main__ - INFO - Ä£ĞÍ±£´æÔÚ ./checkpoints\best_model.pth
-2025-04-10 12:08:49,578 - __main__ - INFO - ±£´æÁËĞÂµÄ×î¼ÑÄ£ĞÍ£¬ÑéÖ¤ËğÊ§: 0.0786
-2025-04-10 12:10:34,729 - __main__ - INFO - Ä£ĞÍ±£´æÔÚ ./checkpoints\best_model.pth
-2025-04-10 12:10:34,729 - __main__ - INFO - ±£´æÁËĞÂµÄ×î¼ÑÄ£ĞÍ£¬ÑéÖ¤ËğÊ§: 0.0729
-2025-04-10 12:14:06,813 - __main__ - INFO - Ä£ĞÍ±£´æÔÚ ./checkpoints\model_epoch_20.pth
-2025-04-10 12:15:31,837 - __main__ - INFO - Ä£ĞÍ±£´æÔÚ ./checkpoints\best_model.pth
-2025-04-10 12:15:31,837 - __main__ - INFO - ±£´æÁËĞÂµÄ×î¼ÑÄ£ĞÍ£¬ÑéÖ¤ËğÊ§: 0.0687
+2025-04-10 23:51:35,937 - __main__ - INFO - ä½¿ç”¨è®¾å¤‡: cuda
+2025-04-10 23:51:35,938 - __main__ - INFO - å‚æ•°: {'data_dir': './data', 'save_dir': './checkpoints', 'batch_size': 32, 'epochs': 10, 'lr': 0.001, 'seed': 42, 'n_trajectories': 200, 'trajectory_length': 200, 'segment_length': 200, 'prediction_length': 0, 'timesteps': 500, 'device': 'cuda', 'test_size': 0.1, 'val_size': 0.1, 'resume': False, 'checkpoint': None}
+2025-04-10 23:51:35,938 - __main__ - INFO - åŠ è½½ANDIæ•°æ®é›†...
+2025-04-10 23:52:58,353 - __main__ - INFO - æ•°æ®é›†åˆ†å‰²: è®­ç»ƒ=127360, éªŒè¯=15920, æµ‹è¯•=15920
+2025-04-10 23:52:58,763 - utils - INFO - æµ‹è¯•æ•°æ®å·²ä¿å­˜è‡³: ./data\test_dataset\noisy_test_data.npy
+2025-04-10 23:53:02,843 - utils - INFO - æµ‹è¯•æ•°æ®å·²ä¿å­˜è‡³: ./data\test_dataset\clean_test_data.npy
+2025-04-10 23:53:04,884 - __main__ - INFO - å¼€å§‹è®­ç»ƒ...
+2025-04-10 23:57:37,813 - __main__ - INFO - ä½¿ç”¨è®¾å¤‡: cuda
+2025-04-10 23:57:37,814 - __main__ - INFO - å‚æ•°: {'data_dir': './data', 'save_dir': './checkpoints', 'batch_size': 32, 'epochs': 5, 'lr': 0.001, 'seed': 42, 'n_trajectories': 200, 'trajectory_length': 200, 'segment_length': 200, 'prediction_length': 0, 'timesteps': 500, 'device': 'cuda', 'test_size': 0.1, 'val_size': 0.1, 'resume': False, 'checkpoint': None}
+2025-04-10 23:57:37,814 - __main__ - INFO - åŠ è½½ANDIæ•°æ®é›†...
+2025-04-10 23:58:53,220 - __main__ - INFO - æ•°æ®é›†åˆ†å‰²: è®­ç»ƒ=127360, éªŒè¯=15920, æµ‹è¯•=15920
+2025-04-10 23:58:53,585 - utils - INFO - æµ‹è¯•æ•°æ®å·²ä¿å­˜è‡³: ./data\test_dataset\noisy_test_data.npy
+2025-04-10 23:58:57,475 - utils - INFO - æµ‹è¯•æ•°æ®å·²ä¿å­˜è‡³: ./data\test_dataset\clean_test_data.npy
+2025-04-10 23:58:59,114 - __main__ - INFO - å¼€å§‹è®­ç»ƒ...
+2025-04-11 00:05:12,268 - __main__ - INFO - Epoch 1/5 - Time: 373.15s - Train Loss: 0.2712 - Denoise Loss: 0.1921 - Exponent Loss: 0.0791 - Val Loss: 0.0423 - Val RMSE: 0.2057 - Val RÂ²: 0.8726 - LR: 0.001000
+2025-04-11 00:05:12,351 - utils - INFO - æ¨¡å‹ä¿å­˜åœ¨ ./checkpoints\best_model.pth
+2025-04-11 00:05:12,352 - __main__ - INFO - ä¿å­˜äº†æ–°çš„æœ€ä½³æ¨¡å‹ï¼ŒéªŒè¯æŸå¤±: 0.0423
+2025-04-11 00:11:31,408 - __main__ - INFO - Epoch 2/5 - Time: 379.06s - Train Loss: 0.2075 - Denoise Loss: 0.1674 - Exponent Loss: 0.0401 - Val Loss: 0.0381 - Val RMSE: 0.1953 - Val RÂ²: 0.8851 - LR: 0.001000
+2025-04-11 00:11:31,482 - utils - INFO - æ¨¡å‹ä¿å­˜åœ¨ ./checkpoints\best_model.pth
+2025-04-11 00:11:31,482 - __main__ - INFO - ä¿å­˜äº†æ–°çš„æœ€ä½³æ¨¡å‹ï¼ŒéªŒè¯æŸå¤±: 0.0381
+2025-04-11 00:17:48,213 - __main__ - INFO - Epoch 3/5 - Time: 376.73s - Train Loss: 0.2000 - Denoise Loss: 0.1629 - Exponent Loss: 0.0370 - Val Loss: 0.0358 - Val RMSE: 0.1891 - Val RÂ²: 0.8923 - LR: 0.001000
+2025-04-11 00:17:48,283 - utils - INFO - æ¨¡å‹ä¿å­˜åœ¨ ./checkpoints\best_model.pth
+2025-04-11 00:17:48,284 - __main__ - INFO - ä¿å­˜äº†æ–°çš„æœ€ä½³æ¨¡å‹ï¼ŒéªŒè¯æŸå¤±: 0.0358
+2025-04-11 00:24:08,534 - __main__ - INFO - Epoch 4/5 - Time: 380.25s - Train Loss: 0.1971 - Denoise Loss: 0.1610 - Exponent Loss: 0.0361 - Val Loss: 0.0354 - Val RMSE: 0.1880 - Val RÂ²: 0.8935 - LR: 0.001000
+2025-04-11 00:24:08,602 - utils - INFO - æ¨¡å‹ä¿å­˜åœ¨ ./checkpoints\best_model.pth
+2025-04-11 00:24:08,604 - __main__ - INFO - ä¿å­˜äº†æ–°çš„æœ€ä½³æ¨¡å‹ï¼ŒéªŒè¯æŸå¤±: 0.0354
+2025-04-11 00:30:22,453 - __main__ - INFO - Epoch 5/5 - Time: 373.85s - Train Loss: 0.2031 - Denoise Loss: 0.1612 - Exponent Loss: 0.0419 - Val Loss: 0.0350 - Val RMSE: 0.1872 - Val RÂ²: 0.8944 - LR: 0.001000
+2025-04-11 00:30:22,492 - utils - INFO - æ¨¡å‹ä¿å­˜åœ¨ ./checkpoints\best_model.pth
+2025-04-11 00:30:22,492 - __main__ - INFO - ä¿å­˜äº†æ–°çš„æœ€ä½³æ¨¡å‹ï¼ŒéªŒè¯æŸå¤±: 0.0350
+2025-04-11 00:30:22,532 - utils - INFO - æ¨¡å‹ä¿å­˜åœ¨ ./checkpoints\final_model.pth
+2025-04-11 00:30:22,533 - __main__ - INFO - è®­ç»ƒå®Œæˆï¼
+2025-04-11 09:50:32,003 - __main__ - INFO - ä½¿ç”¨è®¾å¤‡: cuda
+2025-04-11 09:50:32,004 - __main__ - INFO - å‚æ•°: {'data_dir': './data', 'save_dir': './checkpoints', 'batch_size': 32, 'epochs': 5, 'lr': 0.001, 'seed': 42, 'n_trajectories': 200, 'trajectory_length': 200, 'segment_length': 200, 'prediction_length': 0, 'timesteps': 500, 'device': 'cuda', 'test_size': 0.1, 'val_size': 0.1, 'resume': False, 'checkpoint': None}
+2025-04-11 09:50:32,004 - __main__ - INFO - åŠ è½½ANDIæ•°æ®é›†...
+2025-04-11 09:51:50,715 - __main__ - INFO - æ•°æ®é›†åˆ†å‰²: è®­ç»ƒ=127360, éªŒè¯=15920, æµ‹è¯•=15920
+2025-04-11 09:51:51,135 - utils - INFO - æµ‹è¯•æ•°æ®å·²ä¿å­˜è‡³: ./data\test_dataset\noisy_test_data.npy
+2025-04-11 09:51:55,550 - utils - INFO - æµ‹è¯•æ•°æ®å·²ä¿å­˜è‡³: ./data\test_dataset\clean_test_data.npy
+2025-04-11 09:51:57,725 - __main__ - INFO - å¼€å§‹è®­ç»ƒ...
+2025-04-11 09:57:59,203 - __main__ - INFO - ä½¿ç”¨è®¾å¤‡: cuda
+2025-04-11 09:57:59,203 - __main__ - INFO - å‚æ•°: {'data_dir': './Diffusion/data', 'save_dir': './Diffusion/checkpoints', 'batch_size': 32, 'epochs': 5, 'lr': 0.001, 'seed': 42, 'n_trajectories': 200, 'trajectory_length': 200, 'segment_length': 200, 'prediction_length': 0, 'timesteps': 500, 'device': 'cuda', 'test_size': 0.1, 'val_size': 0.1, 'resume': False, 'checkpoint': None}
+2025-04-11 09:57:59,204 - __main__ - INFO - åŠ è½½ANDIæ•°æ®é›†...
+2025-04-11 09:59:15,437 - __main__ - INFO - ä½¿ç”¨è®¾å¤‡: cuda
+2025-04-11 09:59:15,438 - __main__ - INFO - å‚æ•°: {'data_dir': './Diffusion/data', 'save_dir': './Diffusion/checkpoints', 'batch_size': 32, 'epochs': 50, 'lr': 0.001, 'seed': 42, 'n_trajectories': 200, 'trajectory_length': 200, 'segment_length': 200, 'prediction_length': 0, 'timesteps': 500, 'device': 'cuda', 'test_size': 0.1, 'val_size': 0.1, 'resume': False, 'checkpoint': None}
+2025-04-11 09:59:15,438 - __main__ - INFO - åŠ è½½ANDIæ•°æ®é›†...
+2025-04-11 10:00:37,899 - __main__ - INFO - æ•°æ®é›†åˆ†å‰²: è®­ç»ƒ=127360, éªŒè¯=15920, æµ‹è¯•=15920
+2025-04-11 10:00:38,296 - utils - INFO - æµ‹è¯•æ•°æ®å·²ä¿å­˜è‡³: ./Diffusion/data\test_dataset\noisy_test_data.npy
+2025-04-11 10:00:42,304 - utils - INFO - æµ‹è¯•æ•°æ®å·²ä¿å­˜è‡³: ./Diffusion/data\test_dataset\clean_test_data.npy
+2025-04-11 10:00:43,718 - __main__ - INFO - å¼€å§‹è®­ç»ƒ...
+2025-04-11 10:07:32,176 - __main__ - INFO - Epoch 1/50 - Time: 408.46s - Train Loss: 0.2678 - Denoise Loss: 0.1915 - Exponent Loss: 0.0762 - Val Loss: 0.0435 - Val RMSE: 0.2087 - Val RÂ²: 0.8695 - LR: 0.001000
+2025-04-11 10:07:32,220 - utils - INFO - æ¨¡å‹ä¿å­˜åœ¨ ./Diffusion/checkpoints\best_model.pth
+2025-04-11 10:07:32,220 - __main__ - INFO - ä¿å­˜äº†æ–°çš„æœ€ä½³æ¨¡å‹ï¼ŒéªŒè¯æŸå¤±: 0.0435
+2025-04-11 10:14:20,213 - __main__ - INFO - Epoch 2/50 - Time: 407.99s - Train Loss: 0.2071 - Denoise Loss: 0.1669 - Exponent Loss: 0.0403 - Val Loss: 0.0389 - Val RMSE: 0.1972 - Val RÂ²: 0.8834 - LR: 0.001000
+2025-04-11 10:14:20,252 - utils - INFO - æ¨¡å‹ä¿å­˜åœ¨ ./Diffusion/checkpoints\best_model.pth
+2025-04-11 10:14:20,253 - __main__ - INFO - ä¿å­˜äº†æ–°çš„æœ€ä½³æ¨¡å‹ï¼ŒéªŒè¯æŸå¤±: 0.0389
+2025-04-11 10:21:10,138 - __main__ - INFO - Epoch 3/50 - Time: 409.88s - Train Loss: 0.2302 - Denoise Loss: 0.1636 - Exponent Loss: 0.0666 - Val Loss: 0.1021 - Val RMSE: 0.3196 - Val RÂ²: 0.6937 - LR: 0.001000
+2025-04-11 10:28:00,579 - __main__ - INFO - Epoch 4/50 - Time: 410.44s - Train Loss: 0.2273 - Denoise Loss: 0.1605 - Exponent Loss: 0.0668 - Val Loss: 0.0603 - Val RMSE: 0.2456 - Val RÂ²: 0.8191 - LR: 0.001000
+2025-04-11 10:35:06,880 - __main__ - INFO - Epoch 5/50 - Time: 426.30s - Train Loss: 0.2063 - Denoise Loss: 0.1587 - Exponent Loss: 0.0476 - Val Loss: 0.0450 - Val RMSE: 0.2121 - Val RÂ²: 0.8652 - LR: 0.001000
+2025-04-11 10:42:28,127 - __main__ - INFO - Epoch 6/50 - Time: 441.25s - Train Loss: 0.1992 - Denoise Loss: 0.1577 - Exponent Loss: 0.0415 - Val Loss: 0.0490 - Val RMSE: 0.2214 - Val RÂ²: 0.8531 - LR: 0.001000
+2025-04-11 10:49:53,786 - __main__ - INFO - Epoch 7/50 - Time: 445.66s - Train Loss: 0.1967 - Denoise Loss: 0.1580 - Exponent Loss: 0.0387 - Val Loss: 0.0424 - Val RMSE: 0.2059 - Val RÂ²: 0.8729 - LR: 0.001000
+2025-04-11 10:57:25,640 - __main__ - INFO - Epoch 8/50 - Time: 451.85s - Train Loss: 0.1933 - Denoise Loss: 0.1565 - Exponent Loss: 0.0368 - Val Loss: 0.0381 - Val RMSE: 0.1951 - Val RÂ²: 0.8858 - LR: 0.001000
+2025-04-11 10:57:25,693 - utils - INFO - æ¨¡å‹ä¿å­˜åœ¨ ./Diffusion/checkpoints\best_model.pth
+2025-04-11 10:57:25,693 - __main__ - INFO - ä¿å­˜äº†æ–°çš„æœ€ä½³æ¨¡å‹ï¼ŒéªŒè¯æŸå¤±: 0.0381
+2025-04-11 11:04:56,533 - __main__ - INFO - Epoch 9/50 - Time: 450.84s - Train Loss: 0.1911 - Denoise Loss: 0.1556 - Exponent Loss: 0.0355 - Val Loss: 0.0372 - Val RMSE: 0.1928 - Val RÂ²: 0.8886 - LR: 0.001000
+2025-04-11 11:04:56,604 - utils - INFO - æ¨¡å‹ä¿å­˜åœ¨ ./Diffusion/checkpoints\best_model.pth
+2025-04-11 11:04:56,605 - __main__ - INFO - ä¿å­˜äº†æ–°çš„æœ€ä½³æ¨¡å‹ï¼ŒéªŒè¯æŸå¤±: 0.0372
+2025-04-11 11:12:11,629 - __main__ - INFO - Epoch 10/50 - Time: 435.02s - Train Loss: 0.1904 - Denoise Loss: 0.1555 - Exponent Loss: 0.0349 - Val Loss: 0.0377 - Val RMSE: 0.1942 - Val RÂ²: 0.8869 - LR: 0.001000
+2025-04-11 11:12:11,674 - utils - INFO - æ¨¡å‹ä¿å­˜åœ¨ ./Diffusion/checkpoints\model_epoch_10.pth
+2025-04-11 11:19:01,890 - __main__ - INFO - Epoch 11/50 - Time: 410.21s - Train Loss: 0.1890 - Denoise Loss: 0.1547 - Exponent Loss: 0.0343 - Val Loss: 0.0353 - Val RMSE: 0.1879 - Val RÂ²: 0.8941 - LR: 0.001000
+2025-04-11 11:19:01,935 - utils - INFO - æ¨¡å‹ä¿å­˜åœ¨ ./Diffusion/checkpoints\best_model.pth
+2025-04-11 11:19:01,935 - __main__ - INFO - ä¿å­˜äº†æ–°çš„æœ€ä½³æ¨¡å‹ï¼ŒéªŒè¯æŸå¤±: 0.0353
+2025-04-11 11:25:52,170 - __main__ - INFO - Epoch 12/50 - Time: 410.24s - Train Loss: 0.1874 - Denoise Loss: 0.1536 - Exponent Loss: 0.0337 - Val Loss: 0.0349 - Val RMSE: 0.1869 - Val RÂ²: 0.8953 - LR: 0.001000
+2025-04-11 11:25:52,210 - utils - INFO - æ¨¡å‹ä¿å­˜åœ¨ ./Diffusion/checkpoints\best_model.pth
+2025-04-11 11:25:52,211 - __main__ - INFO - ä¿å­˜äº†æ–°çš„æœ€ä½³æ¨¡å‹ï¼ŒéªŒè¯æŸå¤±: 0.0349
+2025-04-11 11:32:43,491 - __main__ - INFO - Epoch 13/50 - Time: 411.28s - Train Loss: 0.1884 - Denoise Loss: 0.1553 - Exponent Loss: 0.0331 - Val Loss: 0.0364 - Val RMSE: 0.1909 - Val RÂ²: 0.8907 - LR: 0.001000
+2025-04-11 11:39:34,861 - __main__ - INFO - Epoch 14/50 - Time: 411.37s - Train Loss: 0.1868 - Denoise Loss: 0.1543 - Exponent Loss: 0.0325 - Val Loss: 0.0352 - Val RMSE: 0.1876 - Val RÂ²: 0.8944 - LR: 0.001000
+2025-04-11 11:46:51,769 - __main__ - INFO - Epoch 15/50 - Time: 436.91s - Train Loss: 0.1864 - Denoise Loss: 0.1541 - Exponent Loss: 0.0323 - Val Loss: 0.0341 - Val RMSE: 0.1847 - Val RÂ²: 0.8978 - LR: 0.001000
+2025-04-11 11:46:51,824 - utils - INFO - æ¨¡å‹ä¿å­˜åœ¨ ./Diffusion/checkpoints\best_model.pth
+2025-04-11 11:46:51,825 - __main__ - INFO - ä¿å­˜äº†æ–°çš„æœ€ä½³æ¨¡å‹ï¼ŒéªŒè¯æŸå¤±: 0.0341
+2025-04-11 11:54:17,605 - __main__ - INFO - Epoch 16/50 - Time: 445.78s - Train Loss: 0.1856 - Denoise Loss: 0.1539 - Exponent Loss: 0.0317 - Val Loss: 0.0346 - Val RMSE: 0.1861 - Val RÂ²: 0.8961 - LR: 0.001000
+2025-04-11 12:01:47,980 - __main__ - INFO - Epoch 17/50 - Time: 450.37s - Train Loss: 0.1856 - Denoise Loss: 0.1542 - Exponent Loss: 0.0314 - Val Loss: 0.0342 - Val RMSE: 0.1851 - Val RÂ²: 0.8973 - LR: 0.001000
+2025-04-11 12:09:17,617 - __main__ - INFO - Epoch 18/50 - Time: 449.64s - Train Loss: 0.1847 - Denoise Loss: 0.1534 - Exponent Loss: 0.0313 - Val Loss: 0.0352 - Val RMSE: 0.1876 - Val RÂ²: 0.8945 - LR: 0.001000
+2025-04-11 12:16:49,326 - __main__ - INFO - Epoch 19/50 - Time: 451.71s - Train Loss: 0.1840 - Denoise Loss: 0.1531 - Exponent Loss: 0.0309 - Val Loss: 0.0347 - Val RMSE: 0.1863 - Val RÂ²: 0.8959 - LR: 0.001000
+2025-04-11 12:24:19,069 - __main__ - INFO - Epoch 20/50 - Time: 449.74s - Train Loss: 0.1834 - Denoise Loss: 0.1529 - Exponent Loss: 0.0305 - Val Loss: 0.0355 - Val RMSE: 0.1885 - Val RÂ²: 0.8935 - LR: 0.001000
+2025-04-11 12:24:19,121 - utils - INFO - æ¨¡å‹ä¿å­˜åœ¨ ./Diffusion/checkpoints\model_epoch_20.pth
+2025-04-11 12:31:45,368 - __main__ - INFO - Epoch 21/50 - Time: 446.25s - Train Loss: 0.1830 - Denoise Loss: 0.1528 - Exponent Loss: 0.0302 - Val Loss: 0.0344 - Val RMSE: 0.1854 - Val RÂ²: 0.8969 - LR: 0.000500
+2025-04-11 12:38:36,273 - __main__ - INFO - Epoch 22/50 - Time: 410.90s - Train Loss: 0.1795 - Denoise Loss: 0.1511 - Exponent Loss: 0.0284 - Val Loss: 0.0336 - Val RMSE: 0.1834 - Val RÂ²: 0.8992 - LR: 0.000500
+2025-04-11 12:38:36,313 - utils - INFO - æ¨¡å‹ä¿å­˜åœ¨ ./Diffusion/checkpoints\best_model.pth
+2025-04-11 12:38:36,313 - __main__ - INFO - ä¿å­˜äº†æ–°çš„æœ€ä½³æ¨¡å‹ï¼ŒéªŒè¯æŸå¤±: 0.0336
+2025-04-11 12:45:25,968 - __main__ - INFO - Epoch 23/50 - Time: 409.66s - Train Loss: 0.1787 - Denoise Loss: 0.1510 - Exponent Loss: 0.0278 - Val Loss: 0.0345 - Val RMSE: 0.1856 - Val RÂ²: 0.8967 - LR: 0.000500
+2025-04-11 12:52:15,223 - __main__ - INFO - Epoch 24/50 - Time: 409.25s - Train Loss: 0.1792 - Denoise Loss: 0.1518 - Exponent Loss: 0.0274 - Val Loss: 0.0343 - Val RMSE: 0.1851 - Val RÂ²: 0.8972 - LR: 0.000500
+2025-04-11 12:59:05,204 - __main__ - INFO - Epoch 25/50 - Time: 409.98s - Train Loss: 0.1783 - Denoise Loss: 0.1512 - Exponent Loss: 0.0270 - Val Loss: 0.0345 - Val RMSE: 0.1858 - Val RÂ²: 0.8965 - LR: 0.000500
+2025-04-11 13:06:13,221 - __main__ - INFO - Epoch 26/50 - Time: 428.02s - Train Loss: 0.1769 - Denoise Loss: 0.1503 - Exponent Loss: 0.0266 - Val Loss: 0.0347 - Val RMSE: 0.1862 - Val RÂ²: 0.8961 - LR: 0.000500
+2025-04-11 13:13:40,810 - __main__ - INFO - Epoch 27/50 - Time: 447.59s - Train Loss: 0.1778 - Denoise Loss: 0.1515 - Exponent Loss: 0.0263 - Val Loss: 0.0349 - Val RMSE: 0.1868 - Val RÂ²: 0.8954 - LR: 0.000500
+2025-04-11 13:21:08,530 - __main__ - INFO - Epoch 28/50 - Time: 447.72s - Train Loss: 0.1787 - Denoise Loss: 0.1527 - Exponent Loss: 0.0260 - Val Loss: 0.0353 - Val RMSE: 0.1878 - Val RÂ²: 0.8942 - LR: 0.000250
+2025-04-11 13:28:36,334 - __main__ - INFO - Epoch 29/50 - Time: 447.80s - Train Loss: 0.1757 - Denoise Loss: 0.1512 - Exponent Loss: 0.0245 - Val Loss: 0.0354 - Val RMSE: 0.1882 - Val RÂ²: 0.8938 - LR: 0.000250
+2025-04-11 13:36:05,547 - __main__ - INFO - Epoch 30/50 - Time: 449.21s - Train Loss: 0.1749 - Denoise Loss: 0.1510 - Exponent Loss: 0.0239 - Val Loss: 0.0359 - Val RMSE: 0.1896 - Val RÂ²: 0.8923 - LR: 0.000250
+2025-04-11 13:36:05,601 - utils - INFO - æ¨¡å‹ä¿å­˜åœ¨ ./Diffusion/checkpoints\model_epoch_30.pth
+2025-04-11 13:43:33,572 - __main__ - INFO - Epoch 31/50 - Time: 447.97s - Train Loss: 0.1749 - Denoise Loss: 0.1514 - Exponent Loss: 0.0235 - Val Loss: 0.0360 - Val RMSE: 0.1899 - Val RÂ²: 0.8919 - LR: 0.000250
+2025-04-11 13:51:02,896 - __main__ - INFO - Epoch 32/50 - Time: 449.32s - Train Loss: 0.1738 - Denoise Loss: 0.1507 - Exponent Loss: 0.0230 - Val Loss: 0.0362 - Val RMSE: 0.1903 - Val RÂ²: 0.8914 - LR: 0.000250
+2025-04-11 13:58:31,298 - __main__ - INFO - Epoch 33/50 - Time: 448.40s - Train Loss: 0.1727 - Denoise Loss: 0.1500 - Exponent Loss: 0.0226 - Val Loss: 0.0369 - Val RMSE: 0.1920 - Val RÂ²: 0.8895 - LR: 0.000250
+2025-04-11 14:05:59,378 - __main__ - INFO - Epoch 34/50 - Time: 448.08s - Train Loss: 0.1719 - Denoise Loss: 0.1497 - Exponent Loss: 0.0222 - Val Loss: 0.0371 - Val RMSE: 0.1925 - Val RÂ²: 0.8889 - LR: 0.000125
+2025-04-11 14:13:09,546 - __main__ - INFO - Epoch 35/50 - Time: 430.17s - Train Loss: 0.1706 - Denoise Loss: 0.1496 - Exponent Loss: 0.0211 - Val Loss: 0.0383 - Val RMSE: 0.1957 - Val RÂ²: 0.8852 - LR: 0.000125
+2025-04-11 14:20:04,796 - __main__ - INFO - Epoch 36/50 - Time: 415.25s - Train Loss: 0.1719 - Denoise Loss: 0.1513 - Exponent Loss: 0.0206 - Val Loss: 0.0379 - Val RMSE: 0.1947 - Val RÂ²: 0.8863 - LR: 0.000125
+2025-04-11 14:27:00,980 - __main__ - INFO - Epoch 37/50 - Time: 416.18s - Train Loss: 0.1696 - Denoise Loss: 0.1493 - Exponent Loss: 0.0202 - Val Loss: 0.0382 - Val RMSE: 0.1955 - Val RÂ²: 0.8854 - LR: 0.000125
+2025-04-11 14:33:54,400 - __main__ - INFO - Epoch 38/50 - Time: 413.42s - Train Loss: 0.1691 - Denoise Loss: 0.1493 - Exponent Loss: 0.0199 - Val Loss: 0.0392 - Val RMSE: 0.1980 - Val RÂ²: 0.8825 - LR: 0.000125
+2025-04-11 14:40:44,889 - __main__ - INFO - Epoch 39/50 - Time: 410.49s - Train Loss: 0.1702 - Denoise Loss: 0.1507 - Exponent Loss: 0.0195 - Val Loss: 0.0394 - Val RMSE: 0.1985 - Val RÂ²: 0.8819 - LR: 0.000125
+2025-04-11 14:48:10,963 - __main__ - INFO - Epoch 40/50 - Time: 446.07s - Train Loss: 0.1694 - Denoise Loss: 0.1503 - Exponent Loss: 0.0191 - Val Loss: 0.0393 - Val RMSE: 0.1982 - Val RÂ²: 0.8822 - LR: 0.000063
+2025-04-11 14:48:11,023 - utils - INFO - æ¨¡å‹ä¿å­˜åœ¨ ./Diffusion/checkpoints\model_epoch_40.pth
+2025-04-11 14:55:38,484 - __main__ - INFO - Epoch 41/50 - Time: 447.46s - Train Loss: 0.1677 - Denoise Loss: 0.1494 - Exponent Loss: 0.0183 - Val Loss: 0.0400 - Val RMSE: 0.2000 - Val RÂ²: 0.8801 - LR: 0.000063
+2025-04-11 15:03:05,763 - __main__ - INFO - Epoch 42/50 - Time: 447.28s - Train Loss: 0.1678 - Denoise Loss: 0.1498 - Exponent Loss: 0.0180 - Val Loss: 0.0400 - Val RMSE: 0.1999 - Val RÂ²: 0.8802 - LR: 0.000063
+2025-04-11 15:10:33,319 - __main__ - INFO - Epoch 43/50 - Time: 447.55s - Train Loss: 0.1684 - Denoise Loss: 0.1506 - Exponent Loss: 0.0178 - Val Loss: 0.0403 - Val RMSE: 0.2008 - Val RÂ²: 0.8791 - LR: 0.000063
+2025-04-11 15:18:00,690 - __main__ - INFO - Epoch 44/50 - Time: 447.37s - Train Loss: 0.1683 - Denoise Loss: 0.1507 - Exponent Loss: 0.0176 - Val Loss: 0.0406 - Val RMSE: 0.2016 - Val RÂ²: 0.8781 - LR: 0.000063
+2025-04-11 15:25:28,167 - __main__ - INFO - Epoch 45/50 - Time: 447.48s - Train Loss: 0.1677 - Denoise Loss: 0.1503 - Exponent Loss: 0.0174 - Val Loss: 0.0399 - Val RMSE: 0.1996 - Val RÂ²: 0.8805 - LR: 0.000063
+2025-04-11 15:32:57,793 - __main__ - INFO - Epoch 46/50 - Time: 449.62s - Train Loss: 0.1661 - Denoise Loss: 0.1490 - Exponent Loss: 0.0171 - Val Loss: 0.0403 - Val RMSE: 0.2009 - Val RÂ²: 0.8791 - LR: 0.000031
+2025-04-11 15:40:25,632 - __main__ - INFO - Epoch 47/50 - Time: 447.84s - Train Loss: 0.1670 - Denoise Loss: 0.1503 - Exponent Loss: 0.0167 - Val Loss: 0.0407 - Val RMSE: 0.2017 - Val RÂ²: 0.8781 - LR: 0.000031
+2025-04-11 15:47:52,925 - __main__ - INFO - Epoch 48/50 - Time: 447.29s - Train Loss: 0.1666 - Denoise Loss: 0.1500 - Exponent Loss: 0.0166 - Val Loss: 0.0413 - Val RMSE: 0.2031 - Val RÂ²: 0.8763 - LR: 0.000031
+2025-04-11 15:55:21,221 - __main__ - INFO - Epoch 49/50 - Time: 448.30s - Train Loss: 0.1660 - Denoise Loss: 0.1495 - Exponent Loss: 0.0165 - Val Loss: 0.0410 - Val RMSE: 0.2024 - Val RÂ²: 0.8771 - LR: 0.000031
+2025-04-11 16:02:48,494 - __main__ - INFO - Epoch 50/50 - Time: 447.27s - Train Loss: 0.1657 - Denoise Loss: 0.1493 - Exponent Loss: 0.0164 - Val Loss: 0.0413 - Val RMSE: 0.2031 - Val RÂ²: 0.8763 - LR: 0.000031
+2025-04-11 16:02:48,541 - utils - INFO - æ¨¡å‹ä¿å­˜åœ¨ ./Diffusion/checkpoints\model_epoch_50.pth
+2025-04-11 16:02:48,602 - utils - INFO - æ¨¡å‹ä¿å­˜åœ¨ ./Diffusion/checkpoints\final_model.pth
+2025-04-11 16:02:48,602 - __main__ - INFO - è®­ç»ƒå®Œæˆï¼

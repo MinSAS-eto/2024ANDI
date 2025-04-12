@@ -3,6 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
 import math
+from sklearn.metrics import mean_squared_error, r2_score
 
 # 保留CNN-BiLSTM模型的原始组件
 class MultiHeadSelfAttention(nn.Module):
@@ -97,7 +98,7 @@ class SinusoidalEmbedding(nn.Module):
 
 class AdaptiveLayerNorm(nn.Module):
     """
-    使用条件信息的自适应层归一化
+   使用条件信息的自适应层归一化
     受TimeDiT中AdaLN条件注入的启发
     """
     def __init__(self, dim, condition_dim):
@@ -414,7 +415,8 @@ class AnomalousDiffusionExponentModel:
             pred_exponents = self.model(x_0, torch.zeros_like(t), predict_exponent=True)
             
             # 指数预测损失
-            exponent_loss = F.mse_loss(pred_exponents, target_exponents)
+            target_exponents_reshaped = target_exponents.view(pred_exponents.shape)
+            exponent_loss = F.mse_loss(pred_exponents, target_exponents_reshaped)
             
             # 组合损失（加权和）
             total_loss = denoising_loss + exponent_loss
@@ -582,7 +584,7 @@ def calculate_anomalous_diffusion_metrics(trajectory, dt=1.0):
     return msd, exponent
 
 
-def evaluate_with_denoising(model, dataloader, device, denoise_steps=50):
+def evaluate_with_denoising(model, dataloader, device, denoise_steps=100):
     """评估去噪后的模型在数据集上的性能"""
     model.model.eval()
     all_true_exponents = []
@@ -599,24 +601,30 @@ def evaluate_with_denoising(model, dataloader, device, denoise_steps=50):
             
             # 常规预测
             pred_exponents = model.predict_exponent(segments)
-            loss = nn.MSELoss()(pred_exponents, true_exponents)
+            
+            # 添加形状调整
+            true_exponents_reshaped = true_exponents.view(pred_exponents.shape)
+            loss = nn.MSELoss()(pred_exponents, true_exponents_reshaped)
             
             # 去噪后预测
             pred_exponents_denoised, _ = model.predict_exponent_with_denoising(
                 segments, denoise_steps=denoise_steps
             )
-            loss_denoised = nn.MSELoss()(pred_exponents_denoised, true_exponents)
             
-            # 收集结果
-            all_true_exponents.append(true_exponents.cpu().numpy())
-            all_pred_exponents.append(pred_exponents.cpu().numpy())
-            all_pred_exponents_denoised.append(pred_exponents_denoised.cpu().numpy())
+            # 添加形状调整
+            true_exponents_reshaped = true_exponents.view(pred_exponents_denoised.shape)
+            loss_denoised = nn.MSELoss()(pred_exponents_denoised, true_exponents_reshaped)
+            
+            # 收集结果 - 确保转换为一维数组
+            all_true_exponents.append(true_exponents.cpu().numpy().flatten())
+            all_pred_exponents.append(pred_exponents.cpu().numpy().flatten())
+            all_pred_exponents_denoised.append(pred_exponents_denoised.cpu().numpy().flatten())
             
             # 累计损失
             total_loss += loss.item() * segments.size(0)
             total_loss_denoised += loss_denoised.item() * segments.size(0)
     
-    # 处理结果
+    # 处理结果 - 确保是正确的维度
     all_true_exponents = np.concatenate(all_true_exponents)
     all_pred_exponents = np.concatenate(all_pred_exponents)
     all_pred_exponents_denoised = np.concatenate(all_pred_exponents_denoised)
@@ -625,15 +633,16 @@ def evaluate_with_denoising(model, dataloader, device, denoise_steps=50):
     avg_loss = total_loss / len(dataloader.dataset)
     avg_loss_denoised = total_loss_denoised / len(dataloader.dataset)
     
-    rmse = np.sqrt(mean_squared_error(all_true_exponents, all_pred_exponents))
-    r2 = r2_score(all_true_exponents, all_pred_exponents)
+    # 确保传递给性能指标函数的是一维数组
+    rmse = np.sqrt(mean_squared_error(all_true_exponents.reshape(-1), all_pred_exponents.reshape(-1)))
+    r2 = r2_score(all_true_exponents.reshape(-1), all_pred_exponents.reshape(-1))
     
-    rmse_denoised = np.sqrt(mean_squared_error(all_true_exponents, all_pred_exponents_denoised))
-    r2_denoised = r2_score(all_true_exponents, all_pred_exponents_denoised)
+    rmse_denoised = np.sqrt(mean_squared_error(all_true_exponents.reshape(-1), all_pred_exponents_denoised.reshape(-1)))
+    r2_denoised = r2_score(all_true_exponents.reshape(-1), all_pred_exponents_denoised.reshape(-1))
     
-    model.model.train()
+    # 返回结果
     return {
-        "direct": (avg_loss, rmse, r2, all_pred_exponents),
-        "denoised": (avg_loss_denoised, rmse_denoised, r2_denoised, all_pred_exponents_denoised),
-        "true": all_true_exponents
+        'direct': (avg_loss, rmse, r2, all_pred_exponents),
+        'denoised': (avg_loss_denoised, rmse_denoised, r2_denoised, all_pred_exponents_denoised),
+        'true': all_true_exponents
     }

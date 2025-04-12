@@ -23,8 +23,8 @@ def load_andi_data(N, Length, add_noise=True, noise_level=0.1):
     AD_instance = datasets_theory()
     
     # 从不同模型生成数据（每个模型可调整的数量）
-    data1 = AD_instance.create_dataset(T=Length, N_models=N, exponents=np.random.uniform(0.05, 1.0, size=N), models=0, dimension=1)
-    data2 = AD_instance.create_dataset(T=Length, N_models=N, exponents=np.random.uniform(0.05, 1.0, size=N), models=1, dimension=1)
+    data1 = AD_instance.create_dataset(T=Length, N_models=140, exponents=np.random.uniform(0.05, 1.0, size=140), models=0, dimension=1)
+    data2 = AD_instance.create_dataset(T=Length, N_models=140, exponents=np.random.uniform(0.05, 1.0, size=140), models=1, dimension=1)
     data3 = AD_instance.create_dataset(T=Length, N_models=N, exponents=np.random.uniform(0.05, 2.0, size=N), models=2, dimension=1)
     data4 = AD_instance.create_dataset(T=Length, N_models=N, exponents=np.random.uniform(1.0, 2.0, size=N),  models=3, dimension=1)
     data5 = AD_instance.create_dataset(T=Length, N_models=N, exponents=np.random.uniform(0.05, 2.0, size=N), models=4, dimension=1)
@@ -114,16 +114,16 @@ class TrajectoryDataset(Dataset):
     def __getitem__(self, idx):
         segment = torch.FloatTensor(self.segments[idx])
         target = torch.FloatTensor(self.targets[idx])
-        exponent = torch.FloatTensor([self.segment_exponents[idx]])
+        exponent = torch.FloatTensor(np.array([self.segment_exponents[idx]]))
         
         # 如果有模型ID则包含
         if hasattr(self, 'segment_model_ids') and len(self.segment_model_ids) > 0:
-            model_id = torch.LongTensor([self.segment_model_ids[idx]])
+            model_id = torch.tensor(self.segment_model_ids[idx], dtype=torch.long)
             return segment, target, exponent, model_id
         else:
             return segment, target, exponent
 
-def split_dataset(dataset, test_size=0.2, val_size=0.1, seed=42):
+def split_dataset(dataset, test_size=0.1, val_size=0.1, seed=42):
     """
     将数据集分割为训练集、验证集和测试集
     

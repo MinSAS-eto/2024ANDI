@@ -11,9 +11,9 @@ from sklearn.metrics import mean_squared_error, r2_score
 import logging
 from tqdm import tqdm
 
-# 导入自定义模块
 from dataset import load_andi_data, TrajectoryDataset, load_clean_and_noisy_data, split_dataset
-from model import CNNBiLSTMDiffusionExponent, AnomalousDiffusionExponentModel, calculate_anomalous_diffusion_metrics
+from model import CNNBiLSTMDiffusionExponent, AnomalousDiffusionExponentModel, calculate_anomalous_diffusion_metrics, evaluate_with_denoising
+from utils import plot_results, plot_comparison_results, visualize_denoising_examples, load_checkpoint, save_checkpoint, set_seed, evaluate, save_test_dataset
 
 # 设置日志
 logging.basicConfig(
@@ -29,125 +29,24 @@ logger = logging.getLogger(__name__)
 def parse_args():
     """解析命令行参数"""
     parser = argparse.ArgumentParser(description='异常扩散指数预测训练脚本')
-    parser.add_argument('--data_dir', type=str, default='./data', help='数据目录')
-    parser.add_argument('--save_dir', type=str, default='./checkpoints', help='模型保存目录')
+    parser.add_argument('--data_dir', type=str, default='./Diffusion/data', help='数据目录')
+    parser.add_argument('--save_dir', type=str, default='./Diffusion/checkpoints', help='模型保存目录')
     parser.add_argument('--batch_size', type=int, default=32, help='批次大小')
-    parser.add_argument('--epochs', type=int, default=50, help='训练轮数')
+    parser.add_argument('--epochs', type=int, default=1, help='训练轮数')
     parser.add_argument('--lr', type=float, default=0.001, help='学习率')
     parser.add_argument('--seed', type=int, default=42, help='随机种子')
-    parser.add_argument('--n_trajectories', type=int, default=50, help='每个模型的轨迹数量')
+    parser.add_argument('--n_trajectories', type=int, default=200, help='每个模型的轨迹数量')
     parser.add_argument('--trajectory_length', type=int, default=200, help='轨迹长度')
-    parser.add_argument('--segment_length', type=int, default=100, help='输入段长度')
-    parser.add_argument('--prediction_length', type=int, default=100, help='预测长度')
+    parser.add_argument('--segment_length', type=int, default=200, help='输入段长度')
+    parser.add_argument('--prediction_length', type=int, default=0, help='预测长度')
     parser.add_argument('--timesteps', type=int, default=500, help='扩散过程中的时间步数')
     parser.add_argument('--device', type=str, default='cuda' if torch.cuda.is_available() else 'cpu', help='设备')
-    parser.add_argument('--test_size', type=float, default=0.2, help='测试集比例')
+    parser.add_argument('--test_size', type=float, default=0.1, help='测试集比例')
     parser.add_argument('--val_size', type=float, default=0.1, help='验证集比例')
     parser.add_argument('--resume', action='store_true', help='从检查点恢复训练')
     parser.add_argument('--checkpoint', type=str, default=None, help='检查点路径')
     
     return parser.parse_args()
-
-def set_seed(seed):
-    """设置随机种子以确保可重复性"""
-    np.random.seed(seed)
-    torch.manual_seed(seed)
-    if torch.cuda.is_available():
-        torch.cuda.manual_seed(seed)
-        torch.cuda.manual_seed_all(seed)
-    torch.backends.cudnn.deterministic = True
-    torch.backends.cudnn.benchmark = False
-
-def save_checkpoint(model, optimizer, epoch, loss, save_path):
-    """保存检查点"""
-    os.makedirs(os.path.dirname(save_path), exist_ok=True)
-    torch.save({
-        'epoch': epoch,
-        'model_state_dict': model.model.state_dict(),
-        'optimizer_state_dict': optimizer.state_dict(),
-        'loss': loss,
-    }, save_path)
-    logger.info(f"模型保存在 {save_path}")
-
-def load_checkpoint(model, optimizer, checkpoint_path):
-    """加载检查点"""
-    checkpoint = torch.load(checkpoint_path)
-    model.model.load_state_dict(checkpoint['model_state_dict'])
-    if optimizer is not None:
-        optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
-    epoch = checkpoint['epoch']
-    loss = checkpoint['loss']
-    logger.info(f"从 epoch {epoch} 加载模型，损失为 {loss:.4f}")
-    return epoch, loss
-
-def evaluate(model, dataloader, device):
-    """评估模型在数据集上的性能"""
-    model.model.eval()
-    all_true_exponents = []
-    all_pred_exponents = []
-    total_loss = 0.0
-    
-    with torch.no_grad():
-        for batch in dataloader:
-            segments, _, true_exponents, _ = batch  # 忽略target和model_id
-            segments = segments.to(device)
-            true_exponents = true_exponents.to(device)
-            
-            # 预测扩散指数
-            pred_exponents = model.predict_exponent(segments)
-            
-            # 收集真实和预测的指数值
-            all_true_exponents.append(true_exponents.cpu().numpy())
-            all_pred_exponents.append(pred_exponents.cpu().numpy())
-            
-            # 计算MSE损失
-            loss = nn.MSELoss()(pred_exponents, true_exponents)
-            total_loss += loss.item() * segments.size(0)
-    
-    # 组合所有批次的结果
-    all_true_exponents = np.concatenate(all_true_exponents)
-    all_pred_exponents = np.concatenate(all_pred_exponents)
-    
-    # 计算指标
-    avg_loss = total_loss / len(dataloader.dataset)
-    rmse = np.sqrt(mean_squared_error(all_true_exponents, all_pred_exponents))
-    r2 = r2_score(all_true_exponents, all_pred_exponents)
-    
-    model.model.train()
-    return avg_loss, rmse, r2, all_true_exponents, all_pred_exponents
-
-def plot_results(true_exponents, pred_exponents, save_path):
-    """绘制真实vs预测的指数图"""
-    plt.figure(figsize=(10, 6))
-    
-    # 散点图：真实vs预测
-    plt.scatter(true_exponents, pred_exponents, alpha=0.5)
-    
-    # 添加理想线 (y=x)
-    min_val = min(np.min(true_exponents), np.min(pred_exponents))
-    max_val = max(np.max(true_exponents), np.max(pred_exponents))
-    plt.plot([min_val, max_val], [min_val, max_val], 'r--')
-    
-    # 标签和标题
-    plt.xlabel('真实扩散指数')
-    plt.ylabel('预测扩散指数')
-    plt.title('异常扩散指数：真实 vs 预测')
-    
-    # 计算并显示统计信息
-    rmse = np.sqrt(mean_squared_error(true_exponents, pred_exponents))
-    r2 = r2_score(true_exponents, pred_exponents)
-    plt.text(0.05, 0.95, f'RMSE: {rmse:.4f}\nR²: {r2:.4f}', 
-             transform=plt.gca().transAxes, bbox=dict(boxstyle="round,pad=0.3", fc="white", alpha=0.8))
-    
-    plt.grid(True, linestyle='--', alpha=0.7)
-    plt.tight_layout()
-    
-    # 保存图像
-    os.makedirs(os.path.dirname(save_path), exist_ok=True)
-    plt.savefig(save_path)
-    plt.close()
-    logger.info(f"结果图保存在 {save_path}")
-
 def main():
     # 解析参数
     args = parse_args()
@@ -214,7 +113,18 @@ def main():
     test_dataset = test_dataset_noisy
 
     logger.info(f"数据集分割: 训练={len(train_dataset)}, 验证={len(val_dataset)}, 测试={len(test_dataset)}")
-    
+
+    # 创建目录保存测试数据
+    test_data_dir = os.path.join(args.data_dir, 'test_dataset')
+    os.makedirs(test_data_dir, exist_ok=True)
+
+    # 分别保存干净和带噪声的测试数据
+    save_test_dataset(test_dataset, os.path.join(test_data_dir, 'noisy_test_data.npy'))
+
+    # 如果您也想保存干净的测试数据（从原始分割中提取）
+    clean_test_dataset = split_dataset(train_dataset, test_size=1.0, val_size=0.0, seed=args.seed)[2]
+    save_test_dataset(clean_test_dataset, os.path.join(test_data_dir, 'clean_test_data.npy'))
+
     # 创建数据加载器
     train_loader = DataLoader(train_dataset, batch_size=args.batch_size, shuffle=True, num_workers=4)
     val_loader = DataLoader(val_dataset, batch_size=args.batch_size, shuffle=False, num_workers=4)
@@ -378,6 +288,8 @@ def main():
     
     # 绘制训练历史
     plt.figure(figsize=(12, 8))
+
+    # 训练和验证损失
     plt.subplot(2, 2, 1)
     plt.plot(history['train_loss'], label='Train Loss')
     plt.plot(history['val_loss'], label='Val Loss')
@@ -385,28 +297,31 @@ def main():
     plt.ylabel('Loss')
     plt.legend()
     plt.title('Training and Validation Loss')
-    
+
+    # 验证RMSE
     plt.subplot(2, 2, 2)
     plt.plot(history['val_rmse'], label='RMSE')
     plt.xlabel('Epoch')
     plt.ylabel('RMSE')
     plt.legend()
     plt.title('Validation RMSE')
-    
-    plt.subplot(2, 2, 3)
+
+    # 验证R²
+    plt.subplot(2, 2, 3)  # 修正: 使用2,2,3而不是2,3
     plt.plot(history['val_r2'], label='R²')
     plt.xlabel('Epoch')
     plt.ylabel('R²')
     plt.legend()
     plt.title('Validation R²')
-    
-    plt.subplot(2, 2, 4)
+
+    # 学习率
+    plt.subplot(2, 2, 4)  # 修正: 使用2,2,4而不是2,4
     plt.plot(history['lr'], label='Learning Rate')
     plt.xlabel('Epoch')
     plt.ylabel('LR')
     plt.legend()
     plt.title('Learning Rate Schedule')
-    
+
     plt.tight_layout()
     plt.savefig(os.path.join(args.save_dir, 'training_history.png'))
     plt.close()
@@ -424,6 +339,26 @@ def main():
     
     # 绘制测试结果
     plot_results(true_exponents, pred_exponents, os.path.join(args.save_dir, 'test_results.png'))
+    
+    # 添加：评估去噪预测的效果
+    logger.info("评估去噪预测方法对扩散指数预测的影响...")
+    denoising_results = evaluate_with_denoising(diffusion_model, test_loader, device)
+
+    # 记录结果
+    logger.info(f"直接预测: Loss={denoising_results['direct'][0]:.4f}, RMSE={denoising_results['direct'][1]:.4f}, R²={denoising_results['direct'][2]:.4f}")
+    logger.info(f"去噪后预测: Loss={denoising_results['denoised'][0]:.4f}, RMSE={denoising_results['denoised'][1]:.4f}, R²={denoising_results['denoised'][2]:.4f}")
+
+    # 绘制比较图
+    plot_comparison_results(
+        denoising_results['true'], 
+        denoising_results['direct'][3], 
+        denoising_results['denoised'][3],
+        os.path.join(args.save_dir, 'denoising_comparison.png')
+    )
+    
+    # 可视化去噪效果
+    logger.info("可视化去噪效果...")
+    visualize_denoising_examples(diffusion_model, test_loader, device, args.save_dir)
     
     # 示例：生成具有特定扩散指数的轨迹
     logger.info("生成具有特定扩散指数的样本轨迹...")

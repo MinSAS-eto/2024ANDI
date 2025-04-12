@@ -202,14 +202,25 @@ def plot_ground_truth_alpha(alpha_values):
     
     plt.show()
 
-# 加载保存的测试数据（包含模型ID）
-def load_saved_test_data(filepath="test_dataset.npz"):
+# 修改load_saved_test_data函数以处理.npy文件
+def load_saved_test_data(filepath="./Diffusion/data/test_dataset/noisy_test_data.npy"):
     print(f"加载保存的测试数据: {filepath}...")
     try:
-        data = np.load(filepath, allow_pickle=True)
-        X_test = data['features']
-        Y_test = data['labels']
-        model_ids = data['model_ids'] if 'model_ids' in data else None
+        # 检查文件扩展名
+        if filepath.endswith('.npz'):
+            # 如果是.npz文件，使用原有方式加载
+            data = np.load(filepath, allow_pickle=True)
+            X_test = data['features']
+            Y_test = data['labels']
+            model_ids = data['model_ids'] if 'model_ids' in data else None
+        elif filepath.endswith('.npy'):
+            # 如果是.npy文件，假设它包含一个字典或元组/列表
+            data = np.load(filepath, allow_pickle=True).item()
+            # 根据实际存储结构调整以下三行
+            X_test = data['trajectories']  # 或data[0]，取决于数据结构
+            Y_test = data['exponents']     # 或data[1]
+            model_ids = data.get('model_ids', None)  # 或data[2]如果存在
+        
         print(f"成功加载测试集，包含 {len(Y_test)} 个样本")
         if model_ids is not None:
             print(f"包含 {len(model_ids)} 个模型ID信息")
@@ -368,7 +379,7 @@ def plot_combined_models_hist2d(y_true, y_pred, model_ids):
 
 def main():
     batch_size = 32
-    model_path = "cnn_lstm_attn_model.pt"
+    model_path = "./CNN+Bilstm/andichallenge-task1/models/cnn_lstm_attn_model.pt"
     
     # Check if model file exists
     if not os.path.exists(model_path):
@@ -376,7 +387,7 @@ def main():
     
     
     # 只加载已保存的测试数据集，不重新生成数据
-    test_data_file = "test_dataset.npz"
+    test_data_file = "./Diffusion/data/test_dataset/noisy_test_data.npy"
     if not os.path.exists(test_data_file):
         print(f"错误：未找到保存的测试数据文件 {test_data_file}。")
         print("请先运行包含数据生成和保存代码的脚本，或修改文件路径。")
